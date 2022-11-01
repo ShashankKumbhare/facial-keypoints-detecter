@@ -1,0 +1,15 @@
+
+1. To build the python package run the following in git-bash:
+
+    - 'python setup.py sdist bdist_wheel'
+
+2. To publish on PyPI:
+
+    - Git bash
+    
+        - 'python setup.py sdist'
+    
+    - Windows PowerShell
+        
+        - cd "C:\Users\shash\My Drive\Github Repositories\facial-keypoint-detecter"
+        - 'twine upload dist/*'
