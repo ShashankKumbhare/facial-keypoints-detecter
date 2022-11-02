@@ -63,19 +63,16 @@ class Net(nn.Module):
         
         super(Net, self).__init__()
         
+        self.criterion = None
+        self.optimizer = None
+        
+        
+        # In: C x H x W
         # --------------------------------------------------------------------------------------------------------------------------
         # Maxpool layer >>
-        # In     : C x H   x W
-        # Out    : C x W/2 x H/2
         self.pool  = nn.MaxPool2d( kernel_size = 2    # kernel : 2 x 2
-                                 , stride      = 2 )  # stride : 2
+                                 , stride      = 2 )  # stride : 2               [ Out: C x W/2 x H/2,   output size = W/2 ]
         # --------------------------------------------------------------------------------------------------------------------------
-        # # Maxpool layer 2 >>
-        # # In     : C x H   x W
-        # # Out    : C x W/4 x H/4
-        # self.pool2 = nn.MaxPool2d( kernel_size = 4    # kernel : 4 x 4
-        #                          , stride      = 4 )  # stride : 4
-        # # --------------------------------------------------------------------------------------------------------------------------
         # Conv-1 >>
         self.conv1 = nn.Conv2d( in_channels  = 1      # In    :  1 x 224 x 224
                               , out_channels = 32     # Out   : 32 x 220 x 220   [ output size = (W-F)/S + 1 = (224-5)/1 + 1 = 220 ]
@@ -95,47 +92,15 @@ class Net(nn.Module):
                                        # Out after max-pooling: 128 x 26 x 26
                                       # Out after max-pooling2: 128 x 13 x 13
         # --------------------------------------------------------------------------------------------------------------------------
-        # # Conv-4 >>
-        # self.conv4 = nn.Conv2d( in_channels  = 128    # In    : 128 x 26 x 26
-        #                       , out_channels = 256    # Out   : 256 x 24 x 24   [ output size = (W-F)/S + 1 = (26-3)/1 + 1 = 24 ]
-        #                       , kernel_size  = 3 )    # kernel:   3 x 3         [ 256 filters, n_parameters = (3*3*128+1)*256 = 295168 ]
-        #                                # Out after max-polling: 256 x 12 x 12
-        # # --------------------------------------------------------------------------------------------------------------------------
-        # # Conv-5 >>
-        # self.conv5 = nn.Conv2d( in_channels  = 256    # In    : 256 x 12 x 12
-        #                       , out_channels = 512    # Out   : 512 x 12 x 12   [ output size = (W-F)/S + 1 = (12-1)/1 + 1 = 12 ]
-        #                       , kernel_size  = 1 )    # kernel:   1 x 1         [ 512 filters, n_parameters = (1*1*256+1)*512 = 131584 ]
-        #                                # Out after max-polling: 512 x 6  x 6
-        # # --------------------------------------------------------------------------------------------------------------------------
         # # Bacth normalization layers >>
         # self.bn1 = nn.BatchNorm2d(32)
         # self.bn2 = nn.BatchNorm2d(64)
         # self.bn3 = nn.BatchNorm2d(128)
-        # self.bn4 = nn.BatchNorm2d(256)
-        # self.bn5 = nn.BatchNorm2d(512)
         # --------------------------------------------------------------------------------------------------------------------------
         # Fully-connected layers:
         self.fc      = nn.Linear( in_features  = 128*26*26, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
-        
-        # self.fc1      = nn.Linear( in_features  = 128*13*13, out_features = 100 )   # [ n_parameters = (128*13*13)*100 =  ]
-        # self.fc2      = nn.Linear( in_features  = 100,       out_features = 200 )   # [ n_parameters =         100*200 = 20000 ]
-        # self.fc3      = nn.Linear( in_features  = 200,       out_features = 136 )   # [ n_parameters =         200*136 = 27200 ]
-        
-        # self.fc1      = nn.Linear( in_features  = 512*6*6, out_features = 100 )   # [ n_parameters = (512*6*6)*1024 = 1857600 ]
-        # self.fc2      = nn.Linear( in_features  =  100,    out_features = 200 )   # [ n_parameters =      100*200   =   20000 ]
-        # self.fc3      = nn.Linear( in_features  =  200,    out_features = 136 )   # [ n_parameters =      200*136   =   27200 ]
         # --------------------------------------------------------------------------------------------------------------------------
-        # Dropout layers:
-        # self.drop_conv1 = nn.Dropout( p = 0.2 )
-        # self.drop_conv2 = nn.Dropout( p = 0.2 )
-        # self.drop_conv3 = nn.Dropout( p = 0.2 )
-        # self.drop_conv4 = nn.Dropout( p = 0.2 )
-        # self.drop_conv5 = nn.Dropout( p = 0.2 )
-        # self.drop_fc1   = nn.Dropout( p = 0.5 )
-        # self.drop_fc2   = nn.Dropout( p = 0.5 )
-        
-        self.drop   = nn.Dropout( p = 0.5 )
-        
+        # self.drop   = nn.Dropout( p = 0.5 )
         # --------------------------------------------------------------------------------------------------------------------------
     
     # <<
@@ -171,14 +136,17 @@ class Net(nn.Module):
             RETURNS
             =======
                 
-                x <np.array>
+                x <torch.Tensor>
                 
-                Numpy array of predicted keypoints of shape (n_keypoints, 2).
+                Tensor of predicted keypoints of torch.Size([n_images, n_keypoints, 2]).
         
         ============================================================================
         END << DOC << forward
         ============================================================================
         """
+        
+        if len(x.shape) == 3:
+            x = x.unsqueeze(0)
         
         # Conv/relu + pool + dropout layers >>
         
@@ -187,47 +155,102 @@ class Net(nn.Module):
         x = self.pool( F.elu( self.conv1(x) ) ) # out: 32  x 110 x 110
         x = self.pool( F.elu( self.conv2(x) ) ) # out: 64  x 54  x 54
         x = self.pool( F.elu( self.conv3(x) ) ) # out: 128 x 26  x 26
-        # x = self.pool( F.elu( self.conv4(x) ) ) # out: 256 x 12  x 12
-        # x = self.pool( F.elu( self.conv5(x) ) ) # out: 512 x 6   x 6
         
         # x = self.pool( F.elu( self.bn1( self.conv1(x) ) ) ) # out: 32  x 110 x 110
         # x = self.pool( F.elu( self.bn2( self.conv2(x) ) ) ) # out: 64  x 54  x 54
         # x = self.pool( F.elu( self.bn3( self.conv3(x) ) ) ) # out: 128 x 26  x 26
-        # x = self.pool( F.elu( self.bn4( self.conv4(x) ) ) ) # out: 256 x 12  x 12
-        # x = self.pool( F.elu( self.bn5( self.conv5(x) ) ) ) # out: 512 x 6   x 6
-        
-        # x = self.drop_conv1( self.pool( F.elu( self.bn1( self.conv1(x) ) ) ) ) # out: 32  x 110 x 110
-        # x = self.drop_conv2( self.pool( F.elu( self.bn2( self.conv2(x) ) ) ) ) # out: 64  x 54  x 54
-        # x = self.drop_conv3( self.pool( F.elu( self.bn3( self.conv3(x) ) ) ) ) # out: 128 x 26  x 26
-        # x = self.drop_conv4( self.pool( F.elu( self.bn4( self.conv4(x) ) ) ) ) # out: 256 x 12  x 12
-        # x = self.drop_conv5( self.pool( F.elu( self.bn5( self.conv5(x) ) ) ) ) # out: 512 x 6   x 6
-        
-        # # In:  224 x 244 x 1
-        # x = self.pool(  F.elu( self.conv1(x) ) ) # out: 32  x 110 x 110
-        # x = self.pool(  F.elu( self.conv2(x) ) ) # out: 64  x 54  x 54
-        # # x = self.pool(  F.elu( self.conv3(x) ) ) # out: 128 x 26  x 26
-        # x = self.pool2( F.elu( self.conv3(x) ) ) # out: 128 x 13  x 13
         
         # Prep for linear layer: this line of code is the equivalent of Flatten in Keras >>
         x = x.view(x.size(0), -1)
-        x = self.drop(x)
+        # x = self.drop(x)
         
         # Linear layers with dropout in between >>
         x = self.fc(x)
         
-        # x = F.relu( self.fc1(x) )
-        # x = F.relu( self.fc2(x) )
-        # x = self.fc3(x)
+        # Reshaping to batch_size x 68 x 2 pts
+        x = x.view(x.size()[0], 68, -1)
         
-        # x = F.elu( self.fc1(x) )
-        # x = self.fc2(x)
-        # x = self.fc3(x)
-        
-        # A modified x, having gone through all the layers of the model >>
+        # Returns a modified x, having gone through all the layers of the model >>
         return x
     # <<
     # ==============================================================================================================================
     # END << METHOD << forward
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> sample_output
+    # ==============================================================================================================================
+    # >>
+    def sample_output   ( self
+                        , data_loader = None
+                        ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> sample_output
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Extract the image and ground truth keypoints from a sample and
+                forward pass the image through the cnn model to get the predicted,
+                output keypoints.
+                
+                Note: This function test how the network performs on the first batch
+                      of test data. It returns the images, the transformed images,
+                      the predicted keypoints (produced by the model), and the
+                      ground truth keypoints.
+            
+            PARAMETERS
+            ==========
+                
+                data_loader <torch.utils.data.dataloader.DataLoader>
+                    
+                    An iterable over the given dataset.
+            
+            RETURNS
+            =======
+                
+                images <torch.Tensor>
+                    
+                    Tensor of images of torch.Size([n_images, 1, H, W]).
+                
+                keypoints_preds <torch.Tensor>
+                    
+                    Tensor of predicted keypoints of torch.Size([n_images, n_keypoints, 2]).
+                
+                keypoints_gts <torch.Tensor>
+                    
+                    Tensor of ground truth keypoints of torch.Size([n_images, n_keypoints, 2]).
+        
+        ============================================================================
+        END << DOC << sample_output
+        ============================================================================
+        """
+        
+        # Iterating through the test dataset >>
+        for i, sample in enumerate(data_loader):
+            
+            # Getting sample data: images and ground truth keypoints >>
+            images        = sample['image']
+            keypoints_gts = sample['keypoints']
+            
+            # Converting images to FloatTensors >>
+            images = images.type(torch.FloatTensor)
+            print(type(images))
+            print(images.shape)
+            
+            # Forward pass to get net output >>
+            keypoints_preds = self(images)
+            
+            # break after first image is tested >>
+            if i == 0:
+                return images, keypoints_preds, keypoints_gts
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << sample_output
     # ==============================================================================================================================
     
     
@@ -264,7 +287,7 @@ class Net(nn.Module):
                 
                 self
                 
-                    Loded model.
+                    Loded model from input file.
         
         ============================================================================
         END << DOC << load_model
@@ -278,6 +301,109 @@ class Net(nn.Module):
     # <<
     # ==============================================================================================================================
     # END << METHOD << load_model
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> train
+    # ==============================================================================================================================
+    # >>
+    def train   ( self
+                , n_epochs     = 10
+                , train_loader = 0
+                ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> train
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
+                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
+                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
+            
+            PARAMETERS
+            ==========
+                
+                p_p_p_p_1 <type>
+                    
+                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
+                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
+                
+                p_p_p_p_2 <type>
+                    
+                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
+                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
+            
+            RETURNS
+            =======
+                
+                r_r_r_r <type>
+                    
+                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
+        
+        ============================================================================
+        END << DOC << train
+        ============================================================================
+        """
+        
+        # Preparing the cnn model for training >>
+        # net.train()
+        if self.criterion is None: self.criterion = nn.SmoothL1Loss()
+        if self.optimizer is None: self.optimizer = optim.Adam(self.parameters(), lr=0.001)
+        
+        # Looping over the dataset multiple times >>
+        list_loss = []
+        for epoch in range(n_epochs):
+            
+            # Training on batches of data >>
+            running_loss = 0.0
+            for batch_i, data in enumerate(train_loader):
+                
+                # Getting the input images and their corresponding labels >>
+                images  = data['image']
+                key_pts = data['keypoints']
+                
+                # Flatten pts >>
+                key_pts = key_pts.view(key_pts.size(0), -1)
+                
+                # Converting variables to floats for regression loss >>
+                key_pts = key_pts.type(torch.FloatTensor)
+                images  = images.type(torch.FloatTensor)
+                
+                # forward pass to get outputs
+                output_pts = self.forward(images)
+                output_pts = output_pts.view(output_pts.size(0), -1)
+                
+                # calculate the loss between predicted and target keypoints
+                loss = self.criterion(output_pts, key_pts)
+                
+                # zero the parameter (weight) gradients
+                self.optimizer.zero_grad()
+                
+                # backward pass to calculate the weight gradients
+                loss.backward()
+                
+                # update the weights
+                self.optimizer.step()
+                
+                # Printing loss statistics >>
+                # to convert loss into a scalar and add it to the running_loss, use .item()
+                running_loss = running_loss + loss.item()
+                if batch_i % 20 == 19:    # print every 20 batches
+                    print('Epoch: {}, Batch: {}, Avg. Loss: {}'.format(epoch + 1, batch_i+1, running_loss/10))
+                    list_loss.append(running_loss)
+                    running_loss = 0.0
+                
+        print('Finished Training')
+        
+        return list_loss
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << train
     # ==============================================================================================================================
     
     

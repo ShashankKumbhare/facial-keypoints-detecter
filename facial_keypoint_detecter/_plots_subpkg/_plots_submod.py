@@ -154,15 +154,15 @@ def plot_output ( images
             
             images <torch.Tensor>
                 
-                Tensor of images of torch.Size([1, 1, H, W]).
-            
-            keypoints_gts <torch.Tensor>
-                
-                Numpy array of ground truth keypoints of torch.Size([n_images, n_keypoints, 2]).
+                Tensor of images of torch.Size([n_images, 1, H, W]).
             
             keypoints_preds <torch.Tensor>
                 
-                Numpy array of predicted keypoints of torch.Size([n_images, n_keypoints, 2]).
+                Tensor of predicted keypoints of torch.Size([n_images, n_keypoints, 2]).
+            
+            keypoints_gts <torch.Tensor>
+                
+                Tensor of ground truth keypoints of torch.Size([n_images, n_keypoints, 2]).
             
             batch_size <int>
                 
@@ -178,13 +178,17 @@ def plot_output ( images
     ================================================================================
     """
     
+    if len(images.shape)          == 3: images          = images.unsqueeze(0)
+    if len(keypoints_preds.shape) == 2: keypoints_preds = keypoints_preds.unsqueeze(0)
+    if len(keypoints_gts.shape)   == 2: keypoints_gts   = keypoints_gts.unsqueeze(0)
+    
     # Deciding the no. of rows and columns of the grid plot >>
     n_plots = min(len(images), batch_size)
-    if n_plots < 6:
-        n_col = n_plots
+    if n_plots < 11:
+        n_col = 5 if n_plots >= 6 else n_plots
+        # n_col = n_plots
     else:
         n_col = int( np.ceil(np.sqrt(n_plots)) )
-    n_col = 5
     n_row = int( np.ceil(n_plots/n_col) )
     
     # Creating plot axes >>
@@ -202,13 +206,13 @@ def plot_output ( images
         
         for j in range(n_col):
             
-            if len(images) == 1:
+            if n_plots == 1:
                 ax_curr = ax
             else:
                 ax_curr = ax[j]
             
             # Un-transforming the image data >>
-            image = images[i_image].data                   # get the image from its wrapper
+            image = images[i_image].data             # get the image from its wrapper
             image = image.numpy()                    # convert to numpy array from a Tensor
             image = np.transpose(image, (1, 2, 0))   # transpose to go from torch to numpy image
             
@@ -224,7 +228,8 @@ def plot_output ( images
             # Un-transforming the ground truth key_pts data >>
             key_pts_gt = None
             if keypoints_gts is not None:
-                key_pts_gt = keypoints_gts[i_image]
+                key_pts_gt = keypoints_gts[i_image].data
+                key_pts_gt = key_pts_gt.numpy()
                 # Undoing normalization of keypoints >>
                 key_pts_gt = key_pts_gt*50.0+100
             
