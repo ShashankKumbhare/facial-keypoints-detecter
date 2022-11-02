@@ -98,6 +98,13 @@ DEFAULT_PREPROCESS_SIZE_RANDOMCROP = 224
 # START >> CONSTANTS >> Model related
 # ==================================================================================================================================
 # >>
+DEFAULT_CRITERION   = nn.SmoothL1Loss # nn.MSELoss
+DEFAULT_OPTIMIZER   = optim.Adam      # optim.SGD
+DEFAULT_LR          = 0.001
+DEFAULT_NUM_WORKERS = 20
+DEFAULT_N_EPOCHS    = 10
+DEFAULT_BATCH_SIZE  = 10
+DEFAULT_SHUFFLE     = True
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

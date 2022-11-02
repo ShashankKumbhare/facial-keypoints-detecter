@@ -113,6 +113,8 @@ def plot_keypoints  ( image
     if title_enabled:
         axes.set_title(title)
     
+    # plt.show()
+    
     return None
 # <<
 # ==================================================================================================================================
@@ -178,9 +180,9 @@ def plot_output ( images
     ================================================================================
     """
     
-    if len(images.shape)          == 3: images          = images.unsqueeze(0)
-    if len(keypoints_preds.shape) == 2: keypoints_preds = keypoints_preds.unsqueeze(0)
-    if len(keypoints_gts.shape)   == 2: keypoints_gts   = keypoints_gts.unsqueeze(0)
+    if len(images.shape) == 3: images = images.unsqueeze(0)
+    if keypoints_preds is not None and len(keypoints_preds.shape) == 2: keypoints_preds = keypoints_preds.unsqueeze(0)
+    if keypoints_gts   is not None and len(keypoints_gts.shape)   == 2: keypoints_gts   = keypoints_gts.unsqueeze(0)
     
     # Deciding the no. of rows and columns of the grid plot >>
     n_plots = min(len(images), batch_size)

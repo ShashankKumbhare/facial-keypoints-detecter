@@ -233,7 +233,7 @@ class Rescale:
         """
         
         image, key_pts = sample['image'], sample['keypoints']
-
+        
         h, w = image.shape[:2]
         if isinstance(self.output_size, int):
             if h > w:
@@ -242,7 +242,7 @@ class Rescale:
                 new_h, new_w = self.output_size, self.output_size * w / h
         else:
             new_h, new_w = self.output_size
-
+        
         new_h, new_w = int(new_h), int(new_w)
         
         image_rescaled = cv2.resize(image, (new_w, new_h))

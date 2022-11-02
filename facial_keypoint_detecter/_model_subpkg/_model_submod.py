@@ -63,10 +63,6 @@ class Net(nn.Module):
         
         super(Net, self).__init__()
         
-        self.criterion = None
-        self.optimizer = None
-        
-        
         # In: C x H x W
         # --------------------------------------------------------------------------------------------------------------------------
         # Maxpool layer >>
@@ -102,7 +98,18 @@ class Net(nn.Module):
         # --------------------------------------------------------------------------------------------------------------------------
         # self.drop   = nn.Dropout( p = 0.5 )
         # --------------------------------------------------------------------------------------------------------------------------
-    
+        
+        self.spec               = Struct()
+        self.spec.criterion     = DEFAULT_CRITERION # ()
+        self.spec.optimizer     = DEFAULT_OPTIMIZER # (self.parameters(), lr = DEFAULT_LR)
+        self.spec.learning_rate = DEFAULT_LR
+        self.spec.dataset_train = datasets.train.preprocessed
+        self.spec.dataset_test  = datasets.test.preprocessed
+        self.spec.n_epochs      = DEFAULT_N_EPOCHS
+        self.spec.batch_size    = DEFAULT_BATCH_SIZE
+        self.spec.shuffle       = DEFAULT_SHUFFLE
+        self.spec.num_workers   = DEFAULT_NUM_WORKERS
+        
     # <<
     # ==============================================================================================================================
     # END << METHOD << __init__
@@ -230,6 +237,8 @@ class Net(nn.Module):
         ============================================================================
         """
         
+        # self.eval()
+        
         # Iterating through the test dataset >>
         for i, sample in enumerate(data_loader):
             
@@ -251,6 +260,104 @@ class Net(nn.Module):
     # <<
     # ==============================================================================================================================
     # END << METHOD << sample_output
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> train_model
+    # ==============================================================================================================================
+    # >>
+    def train_model(self):
+        
+        """
+        ============================================================================
+        START >> DOC >> train_model
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Trains the model.
+            
+            PARAMETERS
+            ==========
+                
+                None
+            
+            RETURNS
+            =======
+                
+                list_loss <list>
+                    
+                    A list of losses for epochs.
+        
+        ============================================================================
+        END << DOC << train_model
+        ============================================================================
+        """
+        
+        # Preparing the cnn model for training >>
+        self.train()
+        criterion = self.spec.criterion()
+        optimizer = self.spec.optimizer(self.parameters(), lr = self.spec.learning_rate)
+        data_loader = DataLoader( self.spec.dataset_train
+                                , batch_size  = self.spec.batch_size
+                                , shuffle     = self.spec.shuffle
+                                , num_workers = self.spec.num_workers )
+        
+        # Looping over the dataset multiple times >>
+        list_loss      = []
+        loss_per_epoch = 0.0
+        for epoch in range(self.spec.n_epochs):
+            
+            # Training on batches of data >>
+            running_loss   = 0.0
+            for batch_i, data in enumerate(data_loader):
+                
+                # Getting the input images and their corresponding labels >>
+                images  = data['image']
+                key_pts = data['keypoints']
+                
+                # Flatten pts >>
+                key_pts = key_pts.view(key_pts.size(0), -1)
+                
+                # Converting variables to floats for regression loss >>
+                key_pts = key_pts.type(torch.FloatTensor)
+                images  = images.type(torch.FloatTensor)
+                
+                # Forward pass to get outputs >>
+                output_pts = self.forward(images)
+                output_pts = output_pts.view(output_pts.size(0), -1)
+                
+                # Calculate the loss between predicted and target keypoints >>
+                loss = criterion(output_pts, key_pts)
+                
+                # Zero the parameter (weight) gradients >>
+                optimizer.zero_grad()
+                
+                # Backward pass to calculate the weight gradients >>
+                loss.backward()
+                
+                # Updating the weights >>
+                optimizer.step()
+                
+                # Printing loss statistics >>
+                # to convert loss into a scalar and add it to the running_loss, use .item()
+                running_loss   = running_loss   + loss.item()
+                loss_per_epoch = loss_per_epoch + loss.item()
+                if batch_i % 20 == 19:    # print every 20 batches
+                    print(f"Epoch: {epoch + 1}, Batch: {batch_i+1}, Avg. {self.spec.criterion.__name__} Loss: {running_loss/20}")
+                    running_loss = 0.0
+                
+            list_loss.append(loss_per_epoch)
+            loss_per_epoch = 0.0
+        
+        print('Finished Training')
+        
+        return list_loss
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << train_model
     # ==============================================================================================================================
     
     
@@ -301,109 +408,6 @@ class Net(nn.Module):
     # <<
     # ==============================================================================================================================
     # END << METHOD << load_model
-    # ==============================================================================================================================
-    
-    
-    # ==============================================================================================================================
-    # START >> METHOD >> train
-    # ==============================================================================================================================
-    # >>
-    def train   ( self
-                , n_epochs     = 10
-                , train_loader = 0
-                ) :
-        
-        """
-        ============================================================================
-        START >> DOC >> train
-        ============================================================================
-            
-            GENERAL INFO
-            ============
-                
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t
-            
-            PARAMETERS
-            ==========
-                
-                p_p_p_p_1 <type>
-                    
-                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-                
-                p_p_p_p_2 <type>
-                    
-                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-            
-            RETURNS
-            =======
-                
-                r_r_r_r <type>
-                    
-                    t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-        
-        ============================================================================
-        END << DOC << train
-        ============================================================================
-        """
-        
-        # Preparing the cnn model for training >>
-        # net.train()
-        if self.criterion is None: self.criterion = nn.SmoothL1Loss()
-        if self.optimizer is None: self.optimizer = optim.Adam(self.parameters(), lr=0.001)
-        
-        # Looping over the dataset multiple times >>
-        list_loss = []
-        for epoch in range(n_epochs):
-            
-            # Training on batches of data >>
-            running_loss = 0.0
-            for batch_i, data in enumerate(train_loader):
-                
-                # Getting the input images and their corresponding labels >>
-                images  = data['image']
-                key_pts = data['keypoints']
-                
-                # Flatten pts >>
-                key_pts = key_pts.view(key_pts.size(0), -1)
-                
-                # Converting variables to floats for regression loss >>
-                key_pts = key_pts.type(torch.FloatTensor)
-                images  = images.type(torch.FloatTensor)
-                
-                # forward pass to get outputs
-                output_pts = self.forward(images)
-                output_pts = output_pts.view(output_pts.size(0), -1)
-                
-                # calculate the loss between predicted and target keypoints
-                loss = self.criterion(output_pts, key_pts)
-                
-                # zero the parameter (weight) gradients
-                self.optimizer.zero_grad()
-                
-                # backward pass to calculate the weight gradients
-                loss.backward()
-                
-                # update the weights
-                self.optimizer.step()
-                
-                # Printing loss statistics >>
-                # to convert loss into a scalar and add it to the running_loss, use .item()
-                running_loss = running_loss + loss.item()
-                if batch_i % 20 == 19:    # print every 20 batches
-                    print('Epoch: {}, Batch: {}, Avg. Loss: {}'.format(epoch + 1, batch_i+1, running_loss/10))
-                    list_loss.append(running_loss)
-                    running_loss = 0.0
-                
-        print('Finished Training')
-        
-        return list_loss
-    # <<
-    # ==============================================================================================================================
-    # END << METHOD << train
     # ==============================================================================================================================
     
     

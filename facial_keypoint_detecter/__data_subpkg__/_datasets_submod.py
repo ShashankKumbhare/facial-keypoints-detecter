@@ -74,7 +74,10 @@ datasets.test.raw  = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_
                                              transform = None )
 
 # Pre-process raw datasets >>
-transform = Compose( [ Rescale(DEFAULT_PREPROCESS_SIZE_RESCALE), RandomCrop(DEFAULT_PREPROCESS_SIZE_RANDOMCROP), Normalize(), ToTensor() ] )
+transform = Compose( [ Rescale(DEFAULT_PREPROCESS_SIZE_RESCALE)
+                     , RandomCrop(DEFAULT_PREPROCESS_SIZE_RANDOMCROP)
+                     , Normalize()
+                     , ToTensor() ] )
 
 datasets.train.preprocessed = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_train.csv",
                                                       root_dir  = f"{path_dir}/dataset_train",
@@ -83,9 +86,6 @@ datasets.train.preprocessed = FacialKeypointsDataset( csv_file  = f"{path_dir}/k
 datasets.test.preprocessed  = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_test.csv",
                                                       root_dir  = f"{path_dir}/dataset_test",
                                                       transform = transform )
-
-
-
 # <<
 # ==================================================================================================================================
 # END << DATASET

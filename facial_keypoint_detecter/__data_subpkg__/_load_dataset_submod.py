@@ -132,7 +132,8 @@ class FacialKeypointsDataset:
         
         # Reading image from index >>
         image_name = os.path.join(self.root_dir, self.key_pts_frame.iloc[idx, 0])
-        image      = mpimg.imread(image_name)
+        # image      = mpimg.imread(image_name)
+        image      = cv2.imread(image_name)
         
         # Removing alpha color channel of image if present >>
         if(image.shape[2] == 4):
