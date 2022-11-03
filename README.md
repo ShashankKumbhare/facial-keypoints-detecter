@@ -2,7 +2,7 @@
 # Facial Keypoints Detection
 
 ### A computer vision project to build a facial keypoints detection system.
-<p align="center"><img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/landmarks_numbered.jpg"  width="500"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
 
 ## Table of Contents
 
@@ -35,6 +35,12 @@
 
 ## Data Description
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" width="100" />
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" width="100" /> 
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" width="100" />
+</p>
+
 - Facial keypoints are the small magenta dots shown on each of the faces in the image above.  
 - In each training and test image, there is a single face and 68 keypoints, with coordinates (x, y), for that face.  
 - These keypoints mark important areas of the face: the eyes, corners of the mouth, the nose, etc. Here they are, numbered, and you can see that specific ranges of points match different portions of the face.  
@@ -43,7 +49,7 @@
 - This facial keypoints dataset consists of 5770 color images.
 - 3462 are training images.
 - 2308 are test images.  
-- The information about the images and keypoints in this dataset are summarized in CSV files, which we can read in using pandas. Let's read the training CSV and get the annotations in an (N, 2) array where N is the number of keypoints and 2 is the dimension of the keypoint coordinates (x, y).
+- The information about the images and keypoints in this dataset are summarized in CSV files.
 
 
 
