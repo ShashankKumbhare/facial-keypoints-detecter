@@ -52,4 +52,4 @@
 - The information about the images and keypoints in this dataset are summarized in [CSV files](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data).  
 
 Note: Datasets are explored in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).  
-Note: All images come from this MIT self-driving car course and are licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+Note: This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
