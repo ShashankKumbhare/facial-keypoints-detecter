@@ -2,6 +2,7 @@
 # Facial Keypoints Detection
 
 ### A computer vision project to build a facial keypoints detection system.
+
 <p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
 
 ## Table of Contents
@@ -24,7 +25,7 @@
   - Emotion recognition.
   - Medical diagnosis: Identifying dysmorphic facial symptoms.
 - Detecting facial keypoints is a challenging problem given the variations in both facial features as well as image conditions. Facial features may differ according to size, position, pose and expression, while image qualtiy may vary with illumination and viewing angle.  
-- In this project, Convolutional Neural Network (CNN) based facial keypoints detector system has been implemented to detect 68 facial keypoints (also called facial landmarks) around important areas of the face: the eyes, corners of the mouth, the nose, etc. using computer vision techniques and deep learning architectures.  
+- In this project, **Convolutional Neural Network (CNN)** based facial keypoints detector system has been implemented to detect 68 facial keypoints (also called facial landmarks) around important areas of the face: the eyes, corners of the mouth, the nose, etc. using **computer vision techniques** and **deep learning architectures**.  
 - The project is broken up into a few main parts in 4 Python notebooks:
   - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb): Loading and Visualizing the Facial Keypoint Data.  
   - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb): Defining and Training a Convolutional Neural Network (CNN) to Predict Facial Keypoints.  
