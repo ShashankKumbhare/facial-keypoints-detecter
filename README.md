@@ -5,8 +5,6 @@
 
 <p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
 
-<img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png" style="margin:auto" width="500"/>
-
 ## Table of Contents
 
 - [**Project Overview**](#Project-Overview)
