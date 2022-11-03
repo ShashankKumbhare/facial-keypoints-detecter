@@ -100,8 +100,8 @@ class Net(nn.Module):
         # --------------------------------------------------------------------------------------------------------------------------
         
         self.spec               = Struct()
-        self.spec.criterion     = DEFAULT_CRITERION # ()
-        self.spec.optimizer     = DEFAULT_OPTIMIZER # (self.parameters(), lr = DEFAULT_LR)
+        self.spec.criterion     = DEFAULT_CRITERION
+        self.spec.optimizer     = DEFAULT_OPTIMIZER
         self.spec.learning_rate = DEFAULT_LR
         self.spec.dataset_train = datasets.train.preprocessed
         self.spec.dataset_test  = datasets.test.preprocessed
@@ -109,6 +109,8 @@ class Net(nn.Module):
         self.spec.batch_size    = DEFAULT_BATCH_SIZE
         self.spec.shuffle       = DEFAULT_SHUFFLE
         self.spec.num_workers   = DEFAULT_NUM_WORKERS
+        
+        self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
         
     # <<
     # ==============================================================================================================================
@@ -248,8 +250,6 @@ class Net(nn.Module):
             
             # Converting images to FloatTensors >>
             images = images.type(torch.FloatTensor)
-            print(type(images))
-            print(images.shape)
             
             # Forward pass to get net output >>
             keypoints_preds = self(images)
@@ -366,7 +366,7 @@ class Net(nn.Module):
     # ==============================================================================================================================
     # >>
     def load_model  ( self
-                    , f = None
+                    , file_model = None
                     ) :
         
         """
@@ -384,7 +384,7 @@ class Net(nn.Module):
             PARAMETERS
             ==========
                 
-                file <str>
+                file_model <str>
                     
                     A file-like object, or a string or os.PathLike object containing
                     a file name.
@@ -401,13 +401,123 @@ class Net(nn.Module):
         ============================================================================
         """
         
-        self.load_state_dict(torch.load(f))
+        self.load_state_dict(torch.load(file_model))
         self.eval()
         
         return self
     # <<
     # ==============================================================================================================================
     # END << METHOD << load_model
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> detect_facial_keypoints
+    # ==============================================================================================================================
+    # >>
+    def detect_facial_keypoints ( self
+                                , file_image
+                                , file_model   = "default"
+                                , plot_enabled = False
+                                , padding      = DEFAULT_PADDING
+                                ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> detect_facial_keypoints
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Detects the facial keypoints in the iunput image.
+            
+            PARAMETERS
+            ==========
+                
+                file_image <str>
+                    
+                    File path of the input image.
+                
+                file_model <str>
+                    
+                    A file-like object, or a string or os.PathLike object containing
+                    a file name.
+                    If "default", a saved model in this package will be used.
+                
+                plot_enabled <bool>
+                    
+                    When enabled plots the detected facial keypoints.
+            
+            RETURNS
+            =======
+                
+                keypoints <list>
+                    
+                    List of length n_images containing tensors of predicted keypoints
+                    of torch.Size([1, n_keypoints, 2]).
+                
+                images <list>
+                    
+                    List of length n_images containing tensors of face-images of
+                    torch.Size([1, H, W])
+        
+        ============================================================================
+        END << DOC << detect_facial_keypoints
+        ============================================================================
+        """
+        
+        # Detecting faces with HAAR-cascade classifier for frontal faces >>
+        faces = detect_faces(file_image)
+        
+        # Loading in color image for face detection >>
+        image_bgr = cv2.imread(file_image)
+        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+        
+        if file_model != "default":
+            self.load_model(file_model)
+        
+        image = np.copy(image_rgb)
+        
+        # Including a padding to extract face as HAAR classifier's bounding box, crops sections of the face
+        images, keypoints = [], []
+        
+        # Looping over the detected faces >>
+        for (x,y,w,h) in faces:
+            
+            # Selecting the region of interest that is the face in the image >>
+            roi = image[ y-padding : y+h+padding
+                       , x-padding : x+w+padding ]
+            
+            # Rescaling the detected face to be the expected square size for CNN >>
+            roi_rescaled = cv2.resize(roi, (224, 224))
+            
+            # Converting the face region from RGB to grayscale >>
+            roi_gray = cv2.cvtColor(roi_rescaled, cv2.COLOR_RGB2GRAY)
+            
+            # Normalizing the grayscale image so that its color range falls in [0,1] instead of [0,255] >>
+            roi_normed = (roi_gray / 255.0 ).astype(np.float32)
+            
+            # Reshaping the numpy image shape (H x W x C) into a torch image shape (C x H x W) >>
+            roi = roi_normed
+            if len(roi.shape) == 2:
+                roi = roi.reshape(roi.shape[0], roi.shape[1], 1)
+            roi_transposed = roi.transpose((2, 0, 1))
+            
+            # Converting to torch array >>
+            roi_torch = torch.from_numpy(roi_transposed)
+            images.append(roi_torch)
+            output_pts = self.forward(roi_torch)
+            keypoints.append(output_pts)
+            
+            # Displaying each detected face and the corresponding keypoints >>
+            if plot_enabled:
+                plot_output(roi_torch, output_pts)
+        
+        return keypoints, images
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << detect_facial_keypoints
     # ==============================================================================================================================
     
     

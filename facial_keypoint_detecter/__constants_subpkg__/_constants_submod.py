@@ -105,6 +105,12 @@ DEFAULT_NUM_WORKERS = 20
 DEFAULT_N_EPOCHS    = 10
 DEFAULT_BATCH_SIZE  = 10
 DEFAULT_SHUFFLE     = True
+DEFAULT_PADDING     = 42
+path_file = os.path.abspath((inspect.stack()[0])[1])
+path_dir  = os.path.dirname(path_file)
+DEFAULT_FILE_MODEL_HARR_CASCADE = f"{path_dir}/detector_architectures/haarcascade_frontalface_default.xml"
+FACE_HARR_CASCADE               = cv2.CascadeClassifier(DEFAULT_FILE_MODEL_HARR_CASCADE)
+DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/20221101_02_3con_1fc_15epoch_batchSize10_cv2_lr0.0001_working.pt"
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

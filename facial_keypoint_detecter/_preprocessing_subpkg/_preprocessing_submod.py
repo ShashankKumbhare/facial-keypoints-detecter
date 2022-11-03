@@ -462,14 +462,16 @@ class ToTensor:
         if(len(image.shape) == 2):
             # add that third color dim
             image = image.reshape(image.shape[0], image.shape[1], 1)
-            
+        
         # Swapping color axis because >>
         # numpy image: H x W x C
         # torch image: C X H X W
         image_transposed = image.transpose((2, 0, 1))
+        image_tensor     = torch.from_numpy(image_transposed)
+        image_tensor     = image_tensor.type(torch.FloatTensor)
         
         # Creating sample_cropped dictionary >>
-        sample_tensor = {'image': torch.from_numpy(image_transposed), 'keypoints': torch.from_numpy(key_pts)}
+        sample_tensor = {'image': image_tensor, 'keypoints': torch.from_numpy(key_pts)}
         
         return sample_tensor
     # <<
