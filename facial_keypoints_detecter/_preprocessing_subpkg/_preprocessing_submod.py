@@ -43,7 +43,7 @@ from .._plots_subpkg           import *
 # START >> EXPORTS
 # ==================================================================================
 # >>
-__all__ = ["Normalize", "Rescale", "RandomCrop", "ToTensor", "Compose"]
+__all__ = ["Normalize", "Rescale", "RandomCrop", "ToTensor", "Rotate", "Compose"]
 # <<
 # ==================================================================================
 # END << EXPORTS
@@ -110,7 +110,7 @@ class Normalize:
                 sample_normalized <dict>
                     
                     Normalized sample dictionary with,
-                    'image'    : <np.array> [rgb image of shape (n_row, n_col, 3).]
+                    'image'    : <np.array> [rgb image of shape (n_row, n_col).]
                     'keypoints': <np.array> [keypoints of shape (n_keypoints, 2).]
         
         ============================================================================
@@ -131,7 +131,7 @@ class Normalize:
         
         # Scaling keypoints to be centered around 0 with a range of [-1, 1] >>
         # mean = 100, sqrt = 50, so, pts should be (pts - 100)/50
-        key_pts_copy = (key_pts_copy - 100)/50.0
+        key_pts_copy = (key_pts_copy - DEFAULT_PREPROCESS_SCALING_MEAN)/DEFAULT_PREPROCESS_SCALING_SQRT
         
         # Creating sample_normalized dictionary >>
         sample_normalized = {'image': image_copy, 'keypoints': key_pts_copy}
@@ -439,7 +439,7 @@ class ToTensor:
                 sample <dict>
                     
                     Dictionary with,
-                    'image'    : <np.array> [rgb image of shape (n_row, n_col, 3).]
+                    'image'    : <np.array> [rgb image of shape (n_row, n_col).]
                     'keypoints': <np.array> [keypoints of shape (n_keypoints, 2).]
             
             RETURNS
@@ -448,8 +448,8 @@ class ToTensor:
                 sample_tensor <dict>
                     
                     Tensor sample dictionary with,
-                    'image'    : <np.array> [rgb image of shape (n_row, n_col, 3).]
-                    'keypoints': <np.array> [keypoints of shape (n_keypoints, 2).]
+                    'image'    : <torch.Tensor> [rgb image of shape (1, n_row, n_col).]
+                    'keypoints': <torch.Tensor> [keypoints of shape (n_keypoints, 2).]
         
         ============================================================================
         END << DOC << __call__
@@ -482,6 +482,140 @@ class ToTensor:
 # <<
 # ==================================================================================================================================
 # END << CLASS << ToTensor
+# ==================================================================================================================================
+
+
+
+# ==================================================================================================================================
+# START >> CLASS >> Rotate
+# ==================================================================================================================================
+# >>
+class Rotate:
+    
+    """
+    ================================================================================
+    START >> DOC >> Rotate
+    ================================================================================
+        
+        GENERAL INFO
+        ============
+            
+            Rotate the image and keypoints in the input sample to a given angle.
+        
+        PARAMETERS
+        ==========
+            
+            angle <float>
+                    
+                    Angle to ratate in degrees.
+        
+        RETURNS
+        =======
+            
+            None
+    
+    ================================================================================
+    END << DOC << Rotate
+    ================================================================================
+    """
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> __init__
+    # ==============================================================================================================================
+    # >>
+    def __init__(self, angle):
+        
+        assert isinstance(angle, (float, int))
+        
+        self.angle = angle
+        
+        x, y  = (DEFAULT_PREPROCESS_SIZE_RANDOMCROP/2, DEFAULT_PREPROCESS_SIZE_RANDOMCROP/2)
+        # # x     = (x - DEFAULT_PREPROCESS_SCALING_MEAN)/DEFAULT_PREPROCESS_SCALING_SQRT
+        # # y     = (y - DEFAULT_PREPROCESS_SCALING_MEAN)/DEFAULT_PREPROCESS_SCALING_SQRT
+        # theta = np.deg2rad(self.angle)
+        # c = np.cos(theta)
+        # s = np.sin(theta)
+        # A = np.array( [ [ 1, 0, -x]
+        #               , [ 0, 1, -y]
+        #               , [ 0, 0, 1] ] )
+        # B = np.array( [ [ c, s, 0]
+        #               , [-s, c, 0]
+        #               , [ 0, 0, 1] ] )
+        # C = np.array( [ [ 1, 0,-x]
+        #               , [ 0, 1,-y]
+        #               , [ 0, 0, 1] ] )
+        # self.matrix_rotate = np.matmul(A,B,C)
+        self.matrix_rotate = cv2.getRotationMatrix2D(center=(x,y), angle=self.angle, scale=1)
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << __init__
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> __call__
+    # ==============================================================================================================================
+    # >>
+    def __call__(self, sample):
+        
+        """
+        ============================================================================
+        START >> DOC >> __call__
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Rotates the image and keypoints in the input sample to a given angle.
+            
+            PARAMETERS
+            ==========
+                
+                sample <dict>
+                    
+                    Dictionary with,
+                    'image'    : <np.array> [rgb image of shape (n_row, n_col).]
+                    'keypoints': <np.array> [keypoints of shape (n_keypoints, 2).]
+            
+            RETURNS
+            =======
+                
+                sample_rotated <dict>
+                    
+                    Rotated sample dictionary with,
+                    'image'    : <np.array> [rgb image of shape (n_row, n_col).]
+                    'keypoints': <np.array> [keypoints of shape (n_keypoints, 2).]
+        
+        ============================================================================
+        END << DOC << __call__
+        ============================================================================
+        """
+        
+        image, key_pts = sample['image'], sample['keypoints']
+        
+        # Rotating image >>
+        # image_rotated       = ndimage.rotate(image, self.angle, reshape=False)
+        # image_rotated       = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        image_rotated       = imutils.rotate_bound(image, -self.angle)
+        
+        # Rotating keypoints >>
+        key_pts_1_col_added = np.append( key_pts, np.zeros([len(key_pts), 1]), 1 )
+        key_pts_1_col_added = key_pts_1_col_added.transpose()
+        key_pts_rotated     = np.matmul(self.matrix_rotate, key_pts_1_col_added)
+        key_pts_rotated     = key_pts_rotated.transpose()[:, 0:2]
+        
+        # Creating sample_rotated dictionary >>
+        sample_rotated = {'image': image_rotated, 'keypoints': key_pts_rotated}
+        
+        return sample_rotated
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << __call__
+    # ==============================================================================================================================
+    
+# <<
+# ==================================================================================================================================
+# END << CLASS << Rotate
 # ==================================================================================================================================
 
 

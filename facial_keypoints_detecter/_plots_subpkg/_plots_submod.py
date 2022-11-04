@@ -225,7 +225,7 @@ def plot_output ( images
                 key_pts_pred = keypoints_preds[i_image].data
                 key_pts_pred = key_pts_pred.numpy()
                 # Undoing normalization of keypoints >>
-                key_pts_pred = key_pts_pred*50.0+100
+                key_pts_pred = key_pts_pred*DEFAULT_PREPROCESS_SCALING_SQRT + DEFAULT_PREPROCESS_SCALING_MEAN
             
             # Un-transforming the ground truth key_pts data >>
             key_pts_gt = None
@@ -233,7 +233,7 @@ def plot_output ( images
                 key_pts_gt = keypoints_gts[i_image].data
                 key_pts_gt = key_pts_gt.numpy()
                 # Undoing normalization of keypoints >>
-                key_pts_gt = key_pts_gt*50.0+100
+                key_pts_gt = key_pts_gt*DEFAULT_PREPROCESS_SCALING_SQRT + DEFAULT_PREPROCESS_SCALING_MEAN
             
             # Plotting all keypoints >>
             plot_keypoints(np.squeeze(image), key_pts_gt, key_pts_pred, cmap = "gray", axes = ax_curr)

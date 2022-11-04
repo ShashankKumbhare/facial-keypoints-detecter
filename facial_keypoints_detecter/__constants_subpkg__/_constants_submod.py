@@ -74,8 +74,8 @@ DEFAULT_CMAP           = "gray" # "viridis"
 DEFAULT_ALPHA          = 0.4
 DEFAULT_KEYPTS_MARKER_SHAPE = "."
 DEFAULT_KEYPTS_MARKER_SIZE  = 20
-DEFAULT_KEYPTS_MARKER_COLOR_GT   = "g"
-DEFAULT_KEYPTS_MARKER_COLOR_PRED = "m"
+DEFAULT_KEYPTS_MARKER_COLOR_GT   = "m"
+DEFAULT_KEYPTS_MARKER_COLOR_PRED = "c"
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << _plots_subpkg related
@@ -86,11 +86,24 @@ DEFAULT_KEYPTS_MARKER_COLOR_PRED = "m"
 # START >> CONSTANTS >> __data_subpkg__ related
 # ==================================================================================================================================
 # >>
-DEFAULT_PREPROCESS_SIZE_RESCALE    = 250
-DEFAULT_PREPROCESS_SIZE_RANDOMCROP = 224
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << __data_subpkg__ related
+# ==================================================================================================================================
+
+
+# ==================================================================================================================================
+# START >> CONSTANTS >> _preprocessing_subpkg related
+# ==================================================================================================================================
+# >>
+DEFAULT_PREPROCESS_SIZE_RESCALE    = 250
+DEFAULT_PREPROCESS_SIZE_RANDOMCROP = 224
+DEFAULT_PREPROCESS_SCALING_MEAN    = 100.0
+DEFAULT_PREPROCESS_SCALING_SQRT    = 50.0
+DEFAULT_PREPROCESS_ROTATE_ANGLE    = 20
+# <<
+# ==================================================================================================================================
+# END << CONSTANTS << _preprocessing_subpkg related
 # ==================================================================================================================================
 
 
@@ -101,16 +114,18 @@ DEFAULT_PREPROCESS_SIZE_RANDOMCROP = 224
 DEFAULT_CRITERION   = nn.SmoothL1Loss # nn.MSELoss
 DEFAULT_OPTIMIZER   = optim.Adam      # optim.SGD
 DEFAULT_LR          = 0.001
-DEFAULT_NUM_WORKERS = 20
+DEFAULT_NUM_WORKERS = 1
 DEFAULT_N_EPOCHS    = 10
 DEFAULT_BATCH_SIZE  = 10
 DEFAULT_SHUFFLE     = True
 DEFAULT_PADDING     = 40
+DEFAULT_N_BATCH_TO_PRINT_LOSS = 20
 path_file = os.path.abspath((inspect.stack()[0])[1])
 path_dir  = os.path.dirname(path_file)
 DEFAULT_FILE_MODEL_HARR_CASCADE = f"{path_dir}/detector_architectures/haarcascade_frontalface_default.xml"
 FACE_HARR_CASCADE               = cv2.CascadeClassifier(DEFAULT_FILE_MODEL_HARR_CASCADE)
 DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/20221101_02_3con_1fc_15epoch_batchSize10_cv2_lr0.0001_working.pt"
+DEFAULT_COLOR_BOX_DETECTED_FACE = (150, 120, 255)
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

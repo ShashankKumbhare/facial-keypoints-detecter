@@ -107,7 +107,7 @@ def detect_faces( file_image
     if plot_enabled:
         for (x,y,w,h) in faces:
             # Drawing a rectangle around each detected face >>
-            cv2.rectangle(image_with_detections,(x,y),(x+w,y+h),(255,0,0),3)
+            cv2.rectangle( image_with_detections,(x,y),(x+w,y+h), DEFAULT_COLOR_BOX_DETECTED_FACE, 3 )
         _ = plt.figure( figsize = (figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE) )
         plt.imshow(image_with_detections)
     

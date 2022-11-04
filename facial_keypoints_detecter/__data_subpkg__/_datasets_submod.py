@@ -86,6 +86,49 @@ datasets.train.preprocessed = FacialKeypointsDataset( csv_file  = f"{path_dir}/k
 datasets.test.preprocessed  = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_test.csv",
                                                       root_dir  = f"{path_dir}/dataset_test",
                                                       transform = transform )
+
+
+# Augmented data: Ratated anti-clockwise >>
+transform_rotate_anti_clockwise = Compose(  [ Rescale(DEFAULT_PREPROCESS_SIZE_RESCALE)
+                                            , RandomCrop(DEFAULT_PREPROCESS_SIZE_RANDOMCROP)
+                                            , Normalize()
+                                            , Rotate(DEFAULT_PREPROCESS_ROTATE_ANGLE)
+                                            , Rescale(DEFAULT_PREPROCESS_SIZE_RANDOMCROP)
+                                            , ToTensor() ] )
+
+datasets.train.augmented_rotate_left = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_train.csv",
+                                                               root_dir  = f"{path_dir}/dataset_train",
+                                                               transform = transform_rotate_anti_clockwise )
+
+datasets.test.augmented_rotate_left  = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_test.csv",
+                                                               root_dir  = f"{path_dir}/dataset_test",
+                                                               transform = transform_rotate_anti_clockwise )
+
+# Augmented data: Ratated clockwise >>
+transform_rotate_clockwise = Compose(   [ Rescale(DEFAULT_PREPROCESS_SIZE_RESCALE)
+                                        , RandomCrop(DEFAULT_PREPROCESS_SIZE_RANDOMCROP)
+                                        , Normalize()
+                                        , Rotate(-DEFAULT_PREPROCESS_ROTATE_ANGLE)
+                                        , Rescale(DEFAULT_PREPROCESS_SIZE_RANDOMCROP)
+                                        , ToTensor() ] )
+
+datasets.train.augmented_rotate_right = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_train.csv",
+                                                                root_dir  = f"{path_dir}/dataset_train",
+                                                                transform = transform_rotate_clockwise )
+
+datasets.test.augmented_rotate_right  = FacialKeypointsDataset( csv_file  = f"{path_dir}/keypoints_frames_test.csv",
+                                                                root_dir  = f"{path_dir}/dataset_test",
+                                                                transform = transform_rotate_clockwise )
+
+# Overall combined dataset >>
+datasets.train.combined = ConcatDataset( [ datasets.train.preprocessed
+                                         , datasets.train.augmented_rotate_left
+                                         , datasets.train.augmented_rotate_right ] )
+
+datasets.test.combined = ConcatDataset(  [ datasets.test.preprocessed
+                                         , datasets.test.augmented_rotate_left
+                                         , datasets.test.augmented_rotate_right ] )
+
 # <<
 # ==================================================================================================================================
 # END << DATASET
