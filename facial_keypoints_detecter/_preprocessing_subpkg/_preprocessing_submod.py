@@ -123,18 +123,21 @@ class Normalize:
         image_copy   = np.copy(image)
         key_pts_copy = np.copy(key_pts)
         
+        # Creating Gaussian blurred image >>
+        image_blurred = cv2.GaussianBlur(image_copy, (3, 3), 2)
+        
         # Converting image to grayscale >>
-        image_copy = cv2.cvtColor(image_copy, cv2.COLOR_RGB2GRAY)
+        image_gray = cv2.cvtColor(image_blurred, cv2.COLOR_RGB2GRAY)
         
         # Scaling values range from [0, 255] to [0, 1] >>
-        image_copy =  image_copy / 255.0
+        image_normed =  image_gray / 255.0
         
         # Scaling keypoints to be centered around 0 with a range of [-1, 1] >>
         # mean = 100, sqrt = 50, so, pts should be (pts - 100)/50
         key_pts_copy = (key_pts_copy - DEFAULT_PREPROCESS_SCALING_MEAN)/DEFAULT_PREPROCESS_SCALING_SQRT
         
         # Creating sample_normalized dictionary >>
-        sample_normalized = {'image': image_copy, 'keypoints': key_pts_copy}
+        sample_normalized = {'image': image_normed, 'keypoints': key_pts_copy}
         
         return sample_normalized
     

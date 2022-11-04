@@ -95,11 +95,11 @@ class Net(nn.Module):
         # self.bn3 = nn.BatchNorm2d(128)
         # --------------------------------------------------------------------------------------------------------------------------
         # Fully-connected layers >>
-        self.fc       = nn.Linear( in_features  = 128*26*26, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
-        # self.fc2      = nn.Linear( in_features  =       500, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
+        self.fc       = nn.Linear( in_features  = 128*26*26, out_features = 500 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
+        self.fc2      = nn.Linear( in_features  =       500, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
         # --------------------------------------------------------------------------------------------------------------------------
         # Dropout layer >>
-        # self.drop   = nn.Dropout( p = 0.4 )
+        self.drop   = nn.Dropout( p = 0.4 )
         # --------------------------------------------------------------------------------------------------------------------------
         
         # # Initializatiing with custom weights >>
@@ -211,8 +211,9 @@ class Net(nn.Module):
         x = x.view(x.size(0), -1)
         
         # Linear layers with dropout in between >>
-        x = self.fc(x)
-        # x = self.fc2(x)
+        x = F.relu( self.fc(x) )
+        x = self.drop(x)
+        x = self.fc2(x)
         
         # Reshaping to batch_size x 68 x 2 pts
         x = x.view(x.size()[0], 68, -1)
