@@ -63,6 +63,7 @@ class Net(nn.Module):
         
         super(Net, self).__init__()
         
+        # --------------------------------------------------------------------------------------------------------------------------
         # In: C x H x W
         # --------------------------------------------------------------------------------------------------------------------------
         # Maxpool layer >>
@@ -93,12 +94,44 @@ class Net(nn.Module):
         # self.bn2 = nn.BatchNorm2d(64)
         # self.bn3 = nn.BatchNorm2d(128)
         # --------------------------------------------------------------------------------------------------------------------------
-        # Fully-connected layers:
+        # Fully-connected layers >>
         self.fc      = nn.Linear( in_features  = 128*26*26, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
         # --------------------------------------------------------------------------------------------------------------------------
-        # self.drop   = nn.Dropout( p = 0.5 )
+        # Dropout layer >>
+        self.drop   = nn.Dropout( p = 0.4 )
         # --------------------------------------------------------------------------------------------------------------------------
-        
+        # Initializatiing with custom weights >>
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                # Initializatizing weights from He/Kaiming Uniform distribution for Convolutional layers >>
+                # Note: - He/Kaiming weight initialization is an initialization method for neural networks that takes into account the
+                #         non-linearity of activation functions, such as ReLU activations.
+                #       - A proper initialization method should avoid reducing or magnifying the magnitudes of input signals
+                #         exponentially. Using a derivation they work out that the condition to stop this happening is:
+                #             1/2*n*Var[w] = 1
+                #       - This implies an initialization scheme of:
+                #             w = N(0,2/n)
+                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-bound, bound],
+                #             where a is given by,
+                #               bound = gain * sqrt( / (fan_mode) ).
+                m.weight = I.kaiming_uniform_(m.weight, a=0)
+                
+            elif isinstance(m, nn.Linear):
+                # Initializatiing weights from Xavier/Glorot Uniform distribution for Fully-connected layers >>
+                # Note: - Xavier Initialization, or Glorot Initialization, is an initialization scheme for neural networks.
+                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a],
+                #             where a is given by,
+                #               a = gain * sqrt(6 / (fan_in+fan_out) ).
+                #       - Xavier initialization was proposed by Glorot and Bengio. They point out that the signal must flow properly
+                #         both forward and backward without dying. They stated that: For the signal to flow properly we need the
+                #         variance of outputs of each layer to be equal to the variance of its input.
+                #       - Xavier initialization works well with the Sigmoid activation function.
+                m.weight = I.xavier_uniform_(m.weight, gain=1)
+        # Note:
+        # - The Uniform distribution works very well when the Sigmoid activation function is used.
+        # - Xavier/Glorot initialization works well with the Sigmoid and Tanh activation function.
+        # - The He/Kaiming weight initialization technique works very well with the ReLU activation function.
+        # --------------------------------------------------------------------------------------------------------------------------
         self.spec               = Struct()
         self.spec.criterion     = DEFAULT_CRITERION
         self.spec.optimizer     = DEFAULT_OPTIMIZER
@@ -109,8 +142,9 @@ class Net(nn.Module):
         self.spec.batch_size    = DEFAULT_BATCH_SIZE
         self.spec.shuffle       = DEFAULT_SHUFFLE
         self.spec.num_workers   = DEFAULT_NUM_WORKERS
+        # --------------------------------------------------------------------------------------------------------------------------
         
-        self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
+        # self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
         
     # <<
     # ==============================================================================================================================
@@ -158,8 +192,6 @@ class Net(nn.Module):
             x = x.unsqueeze(0)
         
         # Conv/relu + pool + dropout layers >>
-        
-        # LeakyRelu
         # In:  224 x 244 x 1
         x = self.pool( F.elu( self.conv1(x) ) ) # out: 32  x 110 x 110
         x = self.pool( F.elu( self.conv2(x) ) ) # out: 64  x 54  x 54
@@ -169,9 +201,10 @@ class Net(nn.Module):
         # x = self.pool( F.elu( self.bn2( self.conv2(x) ) ) ) # out: 64  x 54  x 54
         # x = self.pool( F.elu( self.bn3( self.conv3(x) ) ) ) # out: 128 x 26  x 26
         
-        # Prep for linear layer: this line of code is the equivalent of Flatten in Keras >>
+        # Preparing for linear layer >>
+        # Note: This line of code is the equivalent of Flatten in Keras
         x = x.view(x.size(0), -1)
-        # x = self.drop(x)
+        x = self.drop(x)
         
         # Linear layers with dropout in between >>
         x = self.fc(x)
@@ -476,6 +509,8 @@ class Net(nn.Module):
         
         if file_model != "default":
             self.load_model(file_model)
+        else:
+            self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
         
         image = np.copy(image_rgb)
         
