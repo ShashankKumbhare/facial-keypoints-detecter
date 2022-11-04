@@ -98,7 +98,7 @@ def detect_faces( file_image
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     
     # Running the haar cascade classifier for detecting frontal faces >>
-    faces = FACE_HARR_CASCADE.detectMultiScale(image_rgb, scaleFactor=1.3, minNeighbors=3)
+    faces = FACE_HARR_CASCADE.detectMultiScale(image_rgb, scaleFactor=1.3, minNeighbors=5)
     
     # Making a copy of the original image to plot detections on >>
     image_with_detections = image_rgb.copy()
@@ -107,7 +107,7 @@ def detect_faces( file_image
     if plot_enabled:
         for (x,y,w,h) in faces:
             # Drawing a rectangle around each detected face >>
-            cv2.rectangle( image_with_detections,(x,y),(x+w,y+h), DEFAULT_COLOR_BOX_DETECTED_FACE, 3 )
+            cv2.rectangle( image_with_detections,(x,y),(x+w,y+h), (150, 120, 255), DEFAULT_SIZE_BOX_FACE_DETECTED )
         _ = plt.figure( figsize = (figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE) )
         plt.imshow(image_with_detections)
     

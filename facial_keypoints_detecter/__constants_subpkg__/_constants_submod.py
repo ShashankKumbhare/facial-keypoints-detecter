@@ -75,7 +75,8 @@ DEFAULT_ALPHA          = 0.4
 DEFAULT_KEYPTS_MARKER_SHAPE = "."
 DEFAULT_KEYPTS_MARKER_SIZE  = 20
 DEFAULT_KEYPTS_MARKER_COLOR_GT   = "m"
-DEFAULT_KEYPTS_MARKER_COLOR_PRED = "c"
+DEFAULT_KEYPTS_MARKER_COLOR_PRED = "m"
+DEFAULT_SIZE_BOX_FACE_DETECTED   = 5
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << _plots_subpkg related
@@ -125,7 +126,7 @@ path_dir  = os.path.dirname(path_file)
 DEFAULT_FILE_MODEL_HARR_CASCADE = f"{path_dir}/detector_architectures/haarcascade_frontalface_default.xml"
 FACE_HARR_CASCADE               = cv2.CascadeClassifier(DEFAULT_FILE_MODEL_HARR_CASCADE)
 DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/20221101_02_3con_1fc_15epoch_batchSize10_cv2_lr0.0001_working.pt"
-DEFAULT_COLOR_BOX_DETECTED_FACE = (150, 120, 255)
+DEFAULT_COLOR_BOX_DETECTED_FACE = (150, 120, 255) # (255, 0, 0)
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

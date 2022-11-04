@@ -457,6 +457,7 @@ class Net(nn.Module):
                                 , file_image
                                 , file_model   = "default"
                                 , plot_enabled = False
+                                , figsizeScale    = DEFAULT_FIGSIZESCALE
                                 , padding      = DEFAULT_PADDING
                                 ) :
         
@@ -523,7 +524,11 @@ class Net(nn.Module):
         images, keypoints = [], []
         
         # Looping over the detected faces >>
-        for (x,y,w,h) in faces:
+        if plot_enabled:
+            len_faces = len(faces)
+            fig, axes = plt.subplots(1, len_faces, figsize = (len_faces*figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE))
+        
+        for i, (x,y,w,h) in enumerate(faces):
             
             # Selecting the region of interest that is the face in the image >>
             roi = image[ max(y-padding, 0) : y+h+padding
@@ -552,7 +557,13 @@ class Net(nn.Module):
             
             # Displaying each detected face and the corresponding keypoints >>
             if plot_enabled:
-                plot_output(roi_torch, output_pts)
+                # plot_output(roi_torch, output_pts)
+                axes_curr = axes if len_faces == 1 else axes[i]
+                key_pts_pred = output_pts.data
+                key_pts_pred = key_pts_pred.numpy()
+                # Undoing normalization of keypoints >>
+                key_pts_pred = key_pts_pred[0]*DEFAULT_PREPROCESS_SCALING_SQRT + DEFAULT_PREPROCESS_SCALING_MEAN
+                plot_keypoints(image = roi, keypoints_pred = key_pts_pred, cmap = "gray", axes = axes_curr)
         
         return keypoints, images
     # <<
