@@ -95,44 +95,53 @@ class Net(nn.Module):
         # self.bn3 = nn.BatchNorm2d(128)
         # --------------------------------------------------------------------------------------------------------------------------
         # Fully-connected layers >>
-        self.fc       = nn.Linear( in_features  = 128*26*26, out_features = 500 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
-        self.fc2      = nn.Linear( in_features  =       500, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
+        self.fc       = nn.Linear( in_features  = 128*26*26, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
+        # self.fc2      = nn.Linear( in_features  =       500, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
         # --------------------------------------------------------------------------------------------------------------------------
         # Dropout layer >>
-        self.drop   = nn.Dropout( p = 0.4 )
+        # self.drop   = nn.Dropout( p = 0.4 )
         # --------------------------------------------------------------------------------------------------------------------------
         
-        # # Initializatiing with custom weights >>
-        # for m in self.modules():
-        #     if isinstance(m, nn.Conv2d):
-        #         # Initializatizing weights from He/Kaiming Uniform distribution for Convolutional layers >>
-        #         # Note: - He/Kaiming weight initialization is an initialization method for neural networks that takes into account the
-        #         #         non-linearity of activation functions, such as ReLU activations.
-        #         #       - A proper initialization method should avoid reducing or magnifying the magnitudes of input signals
-        #         #         exponentially. Using a derivation they work out that the condition to stop this happening is:
-        #         #             1/2*n*Var[w] = 1
-        #         #       - This implies an initialization scheme of:
-        #         #             w = N(0,2/n)
-        #         #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-bound, bound],
-        #         #             where a is given by,
-        #         #               bound = gain * sqrt( / (fan_mode) ).
-        #         m.weight = I.kaiming_normal_(m.weight, a=0)
-        #
-        #     elif isinstance(m, nn.Linear):
-        #         # Initializatiing weights from Xavier/Glorot Uniform distribution for Fully-connected layers >>
-        #         # Note: - Xavier Initialization, or Glorot Initialization, is an initialization scheme for neural networks.
-        #         #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a],
-        #         #             where a is given by,
-        #         #               a = gain * sqrt(6 / (fan_in+fan_out) ).
-        #         #       - Xavier initialization was proposed by Glorot and Bengio. They point out that the signal must flow properly
-        #         #         both forward and backward without dying. They stated that: For the signal to flow properly we need the
-        #         #         variance of outputs of each layer to be equal to the variance of its input.
-        #         #       - Xavier initialization works well with the Sigmoid activation function.
-        #         m.weight = I.xavier_normal_(m.weight, gain=1)
-        # # Note:
-        # # - The Uniform distribution works very well when the Sigmoid activation function is used.
-        # # - Xavier/Glorot initialization works well with the Sigmoid and Tanh activation function.
-        # # - The He/Kaiming weight initialization technique works very well with the ReLU activation function.
+        # Initializatiing with custom weights >>
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                # Initializatizing weights from He/Kaiming distribution for Convolutional layers >>
+                # Note: - He/Kaiming weight initialization is an initialization scheme for neural networks that takes into account
+                #         the non-linearity of activation functions, such as ReLU or ELU activations.
+                #       - A proper initialization method should avoid reducing or magnifying the magnitudes of input signals
+                #         exponentially. Using a derivation they work out that the condition to stop this happening is:
+                #             1/2*n*Var[w] = 1
+                #       - This implies an initialization scheme of:
+                #             w = U(-1/sqrt(n), 1/sqrt(n))
+                #                    or
+                #             w = N(0,2/n)
+                #               where,
+                #                   n = no. of input/wights or no. activations/outputs
+                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
+                #             where,
+                #                 a   = gain * sqrt( 3 / fan_mode )
+                #                 std = gain * sqrt( 1 / fan_mode )
+                None
+                m.weight = I.kaiming_uniform_(m.weight, a = 0, nonlinearity='relu')
+                # m.weight = I.kaiming_normal_ (m.weight, a = 0, nonlinearity='relu')
+                
+            elif isinstance(m, nn.Linear):
+                # Initializatiing weights from Xavier/Glorot distribution for Fully-connected layers >>
+                # Note: - Xavier Initialization, or Glorot Initialization is an initialization scheme for neural networks.
+                #       - Xavier initialization was proposed by Glorot and Bengio. They point out that the signal must flow properly
+                #         both forward and backward without dying. They stated that: For the signal to flow properly we need the
+                #         variance of outputs of each layer to be equal to the variance of its input.
+                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
+                #             where,
+                #                 a   = gain * sqrt( 6 / (fan_in + fan_out)) )
+                #                 std = gain * sqrt( 2 / (fan_in + fan_out)) )
+                None
+                # m.weight = I.xavier_uniform_(m.weight, gain=4)
+                # m.weight = I.xavier_normal_ (m.weight, gain=3)
+                
+        # Note:
+        # - The He/Kaiming weight initialization technique works well with the ReLU activation function.
+        # - Xavier/Glorot weight  initialization technique works well with the Sigmoid and Tanh activation function.
         
         # --------------------------------------------------------------------------------------------------------------------------
         
@@ -211,9 +220,9 @@ class Net(nn.Module):
         x = x.view(x.size(0), -1)
         
         # Linear layers with dropout in between >>
-        x = F.relu( self.fc(x) )
-        x = self.drop(x)
-        x = self.fc2(x)
+        # x = F.relu( self.fc(x) )
+        # x = self.drop(x)
+        x = self.fc(x)
         
         # Reshaping to batch_size x 68 x 2 pts
         x = x.view(x.size()[0], 68, -1)
@@ -458,8 +467,7 @@ class Net(nn.Module):
                                 , file_image
                                 , file_model   = "default"
                                 , plot_enabled = False
-                                , figsizeScale    = DEFAULT_FIGSIZESCALE
-                                , padding      = DEFAULT_PADDING
+                                , figsizeScale = DEFAULT_FIGSIZESCALE
                                 ) :
         
         """
@@ -532,8 +540,12 @@ class Net(nn.Module):
         for i, (x,y,w,h) in enumerate(faces):
             
             # Selecting the region of interest that is the face in the image >>
-            roi = image[ max(y-padding, 0) : y+h+padding
-                       , max(x-padding, 0) : x+w+padding ]
+            helf_width_roi = int(max(w,h)*0.35)
+            # roi = image[ max(y-padding, 0) : y+h+padding
+            #            , max(x-padding, 0) : x+w+padding ]
+            
+            roi = image[ max(y-helf_width_roi, 0) : y+h+helf_width_roi
+                       , max(x-helf_width_roi, 0) : x+w+helf_width_roi ]
             
             # Rescaling the detected face to be the expected square size for CNN >>
             roi_rescaled = cv2.resize(roi, (DEFAULT_PREPROCESS_SIZE_RANDOMCROP, DEFAULT_PREPROCESS_SIZE_RANDOMCROP))
@@ -542,17 +554,20 @@ class Net(nn.Module):
             roi_gray = cv2.cvtColor(roi_rescaled, cv2.COLOR_RGB2GRAY)
             
             # Normalizing the grayscale image so that its color range falls in [0,1] instead of [0,255] >>
-            roi_normed = (roi_gray / 255.0 ).astype(np.float32)
+            roi_normed     = (roi_gray     / 255.0 ).astype(np.float32)
+            roi_normed_rgb = (roi_rescaled / 255.0 ).astype(np.float32)
             
             # Reshaping the numpy image shape (H x W x C) into a torch image shape (C x H x W) >>
             roi = roi_normed
             if len(roi.shape) == 2:
                 roi = roi.reshape(roi.shape[0], roi.shape[1], 1)
-            roi_transposed = roi.transpose((2, 0, 1))
+            roi_transposed     = roi.transpose((2, 0, 1))
+            roi_transposed_rgb = roi_normed_rgb
             
             # Converting to torch array >>
-            roi_torch = torch.from_numpy(roi_transposed)
-            images.append(roi_torch)
+            roi_torch     = torch.from_numpy(roi_transposed)
+            roi_torch_rgb = torch.from_numpy(roi_transposed_rgb)
+            images.append(roi_torch_rgb)
             output_pts = self.forward(roi_torch)
             keypoints.append(output_pts)
             
@@ -564,7 +579,8 @@ class Net(nn.Module):
                 key_pts_pred = key_pts_pred.numpy()
                 # Undoing normalization of keypoints >>
                 key_pts_pred = key_pts_pred[0]*DEFAULT_PREPROCESS_SCALING_SQRT + DEFAULT_PREPROCESS_SCALING_MEAN
-                plot_keypoints(image = roi, keypoints_pred = key_pts_pred, cmap = "gray", axes = axes_curr)
+                # print(roi.shape)
+                plot_keypoints(image = roi_transposed_rgb, keypoints_pred = key_pts_pred, cmap = "gray", axes = axes_curr)
         
         return keypoints, images
     # <<

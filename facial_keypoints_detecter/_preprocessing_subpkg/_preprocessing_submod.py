@@ -123,11 +123,8 @@ class Normalize:
         image_copy   = np.copy(image)
         key_pts_copy = np.copy(key_pts)
         
-        # Creating Gaussian blurred image >>
-        image_blurred = cv2.GaussianBlur(image_copy, (3, 3), 2)
-        
         # Converting image to grayscale >>
-        image_gray = cv2.cvtColor(image_blurred, cv2.COLOR_RGB2GRAY)
+        image_gray = cv2.cvtColor(image_copy, cv2.COLOR_RGB2GRAY)
         
         # Scaling values range from [0, 255] to [0, 1] >>
         image_normed =  image_gray / 255.0
