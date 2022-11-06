@@ -299,10 +299,7 @@ def plot_features   ( image_gray_tensor
     
     # Deciding the no. of rows and columns of the grid plot >>
     n_plots = min(2*n_filters, 2*n_features_to_plot)
-    if n_plots < 21:
-        n_col = 10 if n_plots >= 11 else n_plots
-    else:
-        n_col = 2*int( np.ceil(np.sqrt(n_plots/2)) )
+    n_col = n_plots if n_plots < 11 else 12
     n_row = int( np.ceil(n_plots/n_col) )
     
     # Creating plot axes >>
@@ -331,7 +328,7 @@ def plot_features   ( image_gray_tensor
             ax[j+1].set_title(f"feature map #{i_filter}")
             
             i_filter = i_filter + 1
-            if i_filter >= n_features_to_plot:
+            if i_filter >= min(n_filters, n_features_to_plot):
                 break
     
     f.tight_layout()
