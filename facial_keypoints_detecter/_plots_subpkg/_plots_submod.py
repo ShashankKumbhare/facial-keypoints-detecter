@@ -41,7 +41,7 @@ from ..__auxil_subpkg__        import *
 # START >> EXPORTS
 # ==================================================================================
 # >>
-__all__ = ["plot_keypoints", "plot_output"]
+__all__ = ["plot_keypoints", "plot_output", "plot_features"]
 # <<
 # ==================================================================================
 # END << EXPORTS
@@ -112,8 +112,6 @@ def plot_keypoints  ( image
     
     if title_enabled:
         axes.set_title(title)
-    
-    # plt.show()
     
     return None
 # <<
@@ -248,6 +246,101 @@ def plot_output ( images
 # <<
 # ==================================================================================================================================
 # END << FUNCTION << plot_output
+# ==================================================================================================================================
+
+
+
+# ==================================================================================================================================
+# START >> FUNCTION >> plot_features
+# ==================================================================================================================================
+# >>
+def plot_features   ( image_gray_tensor
+                    , weights
+                    , n_features_to_plot = DEFAULT_N_FILTERS_TO_PLOT
+                    , figsizeScale       = DEFAULT_FIGSIZESCALE
+                    ) :
+    
+    """
+    ================================================================================
+    START >> DOC >> plot_features
+    ================================================================================
+        
+        GENERAL INFO
+        ============
+            
+            Plots convolution filter-kernels and filter-maps.
+        
+        PARAMETERS
+        ==========
+            
+            image_gray_tensor <torch.Tensor>
+                
+                Tensor of gray image of torch.Size([1, H, W]).
+            
+            weights <torch.Tensor>
+                
+                Kernels of convolution filters of shape torch.Size([n_filters, 1, k, k]).
+                i.e. (net.conv.weight.data)
+        
+        RETURNS
+        =======
+            
+            None
+    
+    ================================================================================
+    END << DOC << plot_features
+    ================================================================================
+    """
+    
+    image_numpy = image_gray_tensor.numpy()[0]
+    weights     = weights.numpy()
+    
+    n_filters = weights.shape[0]
+    
+    # Deciding the no. of rows and columns of the grid plot >>
+    n_plots = min(2*n_filters, 2*n_features_to_plot)
+    if n_plots < 21:
+        n_col = 10 if n_plots >= 11 else n_plots
+    else:
+        n_col = 2*int( np.ceil(np.sqrt(n_plots/2)) )
+    n_row = int( np.ceil(n_plots/n_col) )
+    
+    # Creating plot axes >>
+    figsize    = (figsizeScale*n_col*DEFAULT_FIGSIZE, figsizeScale*n_row*DEFAULT_FIGSIZE)
+    f, axes    = plt.subplots(n_row, n_col, figsize = figsize)
+    
+    # Loop for all images along the grid >>
+    i_filter = 0
+    for i in range(n_row):
+        
+        if n_row == 1:
+            ax = axes
+        else:
+            ax = axes[i]
+            
+        for j in range(0,n_col,2):
+            
+            # Plotting filter >>
+            filter = weights[i_filter][0]
+            ax[j].imshow(filter, cmap='gray')
+            ax[j].set_title(f"filter #{i_filter}")
+            
+            # Plotting feature map >>
+            image_filtered = cv2.filter2D(image_numpy, -1, filter)
+            ax[j+1].imshow(image_filtered, cmap='gray')
+            ax[j+1].set_title(f"feature map #{i_filter}")
+            
+            i_filter = i_filter + 1
+            if i_filter >= n_features_to_plot:
+                break
+    
+    f.tight_layout()
+    plt.show()
+    
+    return None
+# <<
+# ==================================================================================================================================
+# END << FUNCTION << plot_features
 # ==================================================================================================================================
 
 

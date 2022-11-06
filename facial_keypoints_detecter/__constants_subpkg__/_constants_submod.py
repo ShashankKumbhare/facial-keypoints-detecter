@@ -69,14 +69,15 @@ DEFAULT_DEFAULT_STR = "default"
 DEFAULT_FIGSIZE        = 3.33
 DEFAULT_FIGSIZE_OUTPUT = 10
 DEFAULT_FIGSIZESCALE   = 1
-DEFAULT_NAME_IMAGE     = "image"
+DEFAULT_NAME_IMAGE     = ""
 DEFAULT_CMAP           = "gray" # "viridis"
 DEFAULT_ALPHA          = 0.4
 DEFAULT_KEYPTS_MARKER_SHAPE = "."
 DEFAULT_KEYPTS_MARKER_SIZE  = 20
 DEFAULT_KEYPTS_MARKER_COLOR_GT   = "m"
 DEFAULT_KEYPTS_MARKER_COLOR_PRED = "#00FF00" # "#00CFAF" # "#9578FF"
-DEFAULT_SIZE_BOX_FACE_DETECTED   = 5
+DEFAULT_SIZE_BOX_FACE_DETECTED = 5
+DEFAULT_N_FILTERS_TO_PLOT      = 10
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << _plots_subpkg related
@@ -101,7 +102,7 @@ DEFAULT_PREPROCESS_SIZE_RESCALE    = 250
 DEFAULT_PREPROCESS_SIZE_RANDOMCROP = 224
 DEFAULT_PREPROCESS_SCALING_MEAN    = 100.0
 DEFAULT_PREPROCESS_SCALING_SQRT    = 50.0
-DEFAULT_PREPROCESS_ROTATE_ANGLE    = 20
+DEFAULT_PREPROCESS_ROTATE_ANGLE    = 10
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << _preprocessing_subpkg related
@@ -126,9 +127,11 @@ path_dir  = os.path.dirname(path_file)
 DEFAULT_FILE_MODEL_HARR_CASCADE = f"{path_dir}/detector_architectures/haarcascade_frontalface_default.xml"
 FACE_HARR_CASCADE               = cv2.CascadeClassifier(DEFAULT_FILE_MODEL_HARR_CASCADE)
 DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/20221101_02_3con_1fc_15epoch_batchSize10_cv2_lr0.0001_working.pt"
-DEFAULT_COLOR_BOX_DETECTED_FACE = (0, 207, 175) # (238, 120, 255) # (255, 0, 0)
-DEFAULT_HARR_SCALE_FACTOR   = 1.3
-DEFAULT_HARR_MIN_NEIGHBOURS = 5
+DEFAULT_COLOR_BOX_DETECTED_FACE = (0, 255, 255) # (0, 207, 175) # (238, 120, 255) # (255, 0, 0)
+DEFAULT_HARR_SCALE_FACTOR       = 1.3
+DEFAULT_HARR_MIN_NEIGHBOURS     = 5
+DEFAULT_FILE_FILTERS_SUNGLASSES = f"{path_dir}/filters/sunglasses.png"
+DEFAULT_FILE_FILTERS_MOUSTACHE  = f"{path_dir}/filters/moustache.png"
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

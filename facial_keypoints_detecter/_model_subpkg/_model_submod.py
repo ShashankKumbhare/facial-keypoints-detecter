@@ -103,42 +103,40 @@ class Net(nn.Module):
         # --------------------------------------------------------------------------------------------------------------------------
         
         # Initializatiing with custom weights >>
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                # Initializatizing weights from He/Kaiming distribution for Convolutional layers >>
-                # Note: - He/Kaiming weight initialization is an initialization scheme for neural networks that takes into account
-                #         the non-linearity of activation functions, such as ReLU or ELU activations.
-                #       - A proper initialization method should avoid reducing or magnifying the magnitudes of input signals
-                #         exponentially. Using a derivation they work out that the condition to stop this happening is:
-                #             1/2*n*Var[w] = 1
-                #       - This implies an initialization scheme of:
-                #             w = U(-1/sqrt(n), 1/sqrt(n))
-                #                    or
-                #             w = N(0,2/n)
-                #               where,
-                #                   n = no. of input/wights or no. activations/outputs
-                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
-                #             where,
-                #                 a   = gain * sqrt( 3 / fan_mode )
-                #                 std = gain * sqrt( 1 / fan_mode )
-                None
-                m.weight = I.kaiming_uniform_(m.weight, a = 0, nonlinearity='relu')
-                # m.weight = I.kaiming_normal_ (m.weight, a = 0, nonlinearity='relu')
-                
-            elif isinstance(m, nn.Linear):
-                # Initializatiing weights from Xavier/Glorot distribution for Fully-connected layers >>
-                # Note: - Xavier Initialization, or Glorot Initialization is an initialization scheme for neural networks.
-                #       - Xavier initialization was proposed by Glorot and Bengio. They point out that the signal must flow properly
-                #         both forward and backward without dying. They stated that: For the signal to flow properly we need the
-                #         variance of outputs of each layer to be equal to the variance of its input.
-                #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
-                #             where,
-                #                 a   = gain * sqrt( 6 / (fan_in + fan_out)) )
-                #                 std = gain * sqrt( 2 / (fan_in + fan_out)) )
-                None
-                # m.weight = I.xavier_uniform_(m.weight, gain=4)
-                # m.weight = I.xavier_normal_ (m.weight, gain=3)
-                
+        # for m in self.modules():
+            # if isinstance(m, nn.Conv2d):
+            #     # Initializatizing weights from He/Kaiming distribution for Convolutional layers >>
+            #     # Note: - He/Kaiming weight initialization is an initialization scheme for neural networks that takes into account
+            #     #         the non-linearity of activation functions, such as ReLU or ELU activations.
+            #     #       - A proper initialization method should avoid reducing or magnifying the magnitudes of input signals
+            #     #         exponentially. Using a derivation they work out that the condition to stop this happening is:
+            #     #             1/2*n*Var[w] = 1
+            #     #       - This implies an initialization scheme of:
+            #     #             w = U(-1/sqrt(n), 1/sqrt(n))
+            #     #                    or
+            #     #             w = N(0,2/n)
+            #     #               where,
+            #     #                   n = no. of input/wights or no. activations/outputs
+            #     #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
+            #     #             where,
+            #     #                 a   = gain * sqrt( 3 / fan_mode )
+            #     #                 std = gain * sqrt( 1 / fan_mode )
+            #     # m.weight = I.kaiming_uniform_(m.weight, a = 0, nonlinearity='relu')  # 'a' is not same as 'a' above
+            #     # m.weight = I.kaiming_normal_ (m.weight, a = 0, nonlinearity='relu')  # 'a' is not same as 'a' above
+            #
+            # elif isinstance(m, nn.Linear):
+            #     # Initializatiing weights from Xavier/Glorot distribution for Fully-connected layers >>
+            #     # Note: - Xavier Initialization, or Glorot Initialization is an initialization scheme for neural networks.
+            #     #       - Xavier initialization was proposed by Glorot and Bengio. They point out that the signal must flow properly
+            #     #         both forward and backward without dying. They stated that: For the signal to flow properly we need the
+            #     #         variance of outputs of each layer to be equal to the variance of its input.
+            #     #       - Biases are initialized be 0 and the weights at each layer are initialized as U[-a, a] or N[0, std**2],
+            #     #             where,
+            #     #                 a   = gain * sqrt( 6 / (fan_in + fan_out)) )
+            #     #                 std = gain * sqrt( 2 / (fan_in + fan_out)) )
+            #     # m.weight = I.xavier_uniform_(m.weight, gain=0.6)
+            #     # m.weight = I.xavier_normal_ (m.weight, gain=3)
+        
         # Note:
         # - The He/Kaiming weight initialization technique works well with the ReLU activation function.
         # - Xavier/Glorot weight  initialization technique works well with the Sigmoid and Tanh activation function.
@@ -159,6 +157,12 @@ class Net(nn.Module):
         # --------------------------------------------------------------------------------------------------------------------------
         
         # self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
+        
+        self.apps                         = Struct()
+        self.apps.detect_faces            = self._detect_faces
+        self.apps.detect_facial_keypoints = self._detect_facial_keypoints
+        self.apps.apply_glasses           = self._apply_glasses
+        self.apps.apply_face_blur         = self._apply_face_blur
         
     # <<
     # ==============================================================================================================================
@@ -223,6 +227,7 @@ class Net(nn.Module):
         # x = F.relu( self.fc(x) )
         # x = self.drop(x)
         x = self.fc(x)
+        # x = self.fc2(x)
         
         # Reshaping to batch_size x 68 x 2 pts
         x = x.view(x.size()[0], 68, -1)
@@ -354,8 +359,8 @@ class Net(nn.Module):
                                 , num_workers = self.spec.num_workers )
         
         # Looping over the dataset multiple times >>
-        list_loss      = []
-        loss_per_epoch = 0.0
+        list_loss  = []
+        loss_epoch = 0.0
         for epoch in range(self.spec.n_epochs):
             
             # Training on batches of data >>
@@ -391,14 +396,15 @@ class Net(nn.Module):
                 
                 # Printing loss statistics >>
                 # to convert loss into a scalar and add it to the running_loss, use .item()
-                running_loss   = running_loss   + loss.item()
-                loss_per_epoch = loss_per_epoch + loss.item()
+                running_loss = running_loss + loss.item()
+                loss_epoch   = loss_epoch   + loss.item()
                 if batch_i % DEFAULT_N_BATCH_TO_PRINT_LOSS == (DEFAULT_N_BATCH_TO_PRINT_LOSS-1):    # print every 20 batches
-                    print(f"Epoch: {epoch + 1}, Batch: {batch_i+1}, Avg. {self.spec.criterion.__name__} Loss: {running_loss/20}")
+                    print(f"Epoch: {epoch + 1}, Batch: {batch_i+1}, Avg. {self.spec.criterion.__name__} Loss: {running_loss/DEFAULT_N_BATCH_TO_PRINT_LOSS}")
                     running_loss = 0.0
-                
-            list_loss.append(loss_per_epoch)
-            loss_per_epoch = 0.0
+            
+            list_loss.append(loss_epoch/batch_i)
+            print(f"Epoch: {epoch + 1} Complete! {self.spec.criterion.__name__} Loss: {loss_epoch/batch_i}")
+            loss_epoch = 0.0
         
         print('Finished Training')
         
@@ -406,6 +412,51 @@ class Net(nn.Module):
     # <<
     # ==============================================================================================================================
     # END << METHOD << train_model
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> save_model
+    # ==============================================================================================================================
+    # >>
+    def save_model  ( self
+                    , path_file = None
+                    ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> save_model
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Saves model parameters in a '.pt' file.
+            
+            PARAMETERS
+            ==========
+                
+                path_file <str>
+                    
+                    Path/name of the file to create and save model parameters.
+            
+            RETURNS
+            =======
+                
+                None
+        
+        ============================================================================
+        END << DOC << save_model
+        ============================================================================
+        """
+        
+        # Saving model parameters to the input path >>
+        torch.save(self.state_dict(), path_file)
+        
+        return None
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << save_model
     # ==============================================================================================================================
     
     
@@ -460,10 +511,81 @@ class Net(nn.Module):
     
     
     # ==============================================================================================================================
-    # START >> METHOD >> detect_facial_keypoints
+    # START >> METHOD >> _detect_faces
     # ==============================================================================================================================
     # >>
-    def detect_facial_keypoints ( self
+    def _detect_faces   ( self
+                        , file_image
+                        , plot_enabled = False
+                        , figsizeScale = DEFAULT_FIGSIZESCALE
+                        ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> _detect_faces
+        ============================================================================
+            
+            GENERAL INFO
+        ============
+            
+            Detects faces in the input images using HAAR-cascade classifier for
+            frontal faces.
+        
+        PARAMETERS
+        ==========
+            
+            file_image <str>
+                    
+                    File path of the input image.
+            
+            plot_enabled <bool>
+                    
+                    When enabled plots the detected facial keypoints.
+        
+        RETURNS
+        =======
+            
+            faces <np.ndarray>
+                
+                Numpy array of 4 points for each face detected indicating top-left
+                corner x & y pos, width and height of bounding rectangles of shape
+                (n_faces, 2).
+        
+        ============================================================================
+        END << DOC << _detect_faces
+        ============================================================================
+        """
+        
+        # Loading in color image for face detection >>
+        image_bgr = cv2.imread(file_image)
+        image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+        
+        # Running the haar cascade classifier for detecting frontal faces >>
+        faces = FACE_HARR_CASCADE.detectMultiScale(image_rgb, scaleFactor=DEFAULT_HARR_SCALE_FACTOR, minNeighbors=DEFAULT_HARR_MIN_NEIGHBOURS)
+        
+        # Making a copy of the original image to plot detections on >>
+        image_with_detections = image_rgb.copy()
+        
+        # Looping over the detected faces, mark the image where each face is found >>
+        if plot_enabled:
+            for (x,y,w,h) in faces:
+                # Drawing a rectangle around each detected face >>
+                cv2.rectangle( image_with_detections,(x,y),(x+w,y+h), DEFAULT_COLOR_BOX_DETECTED_FACE, DEFAULT_SIZE_BOX_FACE_DETECTED )
+            _ = plt.figure( figsize = (figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE) )
+            plt.imshow(image_with_detections)
+        
+        return faces
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << _detect_faces
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> _detect_facial_keypoints
+    # ==============================================================================================================================
+    # >>
+    def _detect_facial_keypoints( self
                                 , file_image
                                 , file_model   = "default"
                                 , plot_enabled = False
@@ -472,7 +594,7 @@ class Net(nn.Module):
         
         """
         ============================================================================
-        START >> DOC >> detect_facial_keypoints
+        START >> DOC >> _detect_facial_keypoints
         ============================================================================
             
             GENERAL INFO
@@ -508,24 +630,26 @@ class Net(nn.Module):
                 images <list>
                     
                     List of length n_images containing tensors of face-images of
-                    torch.Size([1, H, W])
+                    torch.Size([1, H, W]).
         
         ============================================================================
-        END << DOC << detect_facial_keypoints
+        END << DOC << _detect_facial_keypoints
         ============================================================================
         """
         
         # Detecting faces with HAAR-cascade classifier for frontal faces >>
-        faces = detect_faces(file_image)
+        faces = self._detect_faces(file_image)
         
         # Loading in color image for face detection >>
         image_bgr = cv2.imread(file_image)
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
         
+        # Loading model if file_model is provided >>
         if file_model != "default":
             self.load_model(file_model)
         # else:
         #     self.load_model(DEFAULT_FILE_FKD_NET_MODEL)
+        self.eval()
         
         image = np.copy(image_rgb)
         
@@ -579,13 +703,219 @@ class Net(nn.Module):
                 key_pts_pred = key_pts_pred.numpy()
                 # Undoing normalization of keypoints >>
                 key_pts_pred = key_pts_pred[0]*DEFAULT_PREPROCESS_SCALING_SQRT + DEFAULT_PREPROCESS_SCALING_MEAN
-                # print(roi.shape)
                 plot_keypoints(image = roi_transposed_rgb, keypoints_pred = key_pts_pred, cmap = "gray", axes = axes_curr)
+        
+        plt.show()
         
         return keypoints, images
     # <<
     # ==============================================================================================================================
-    # END << METHOD << detect_facial_keypoints
+    # END << METHOD << _detect_facial_keypoints
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> _apply_glasses
+    # ==============================================================================================================================
+    # >>
+    def _apply_glasses  ( self
+                        , file_image
+                        , file_sunglasses = "default"
+                        , file_model      = "default"
+                        , figsizeScale    = DEFAULT_FIGSIZESCALE
+                        ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> _apply_glasses
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Applies sunglasses filter to faces.
+            
+            PARAMETERS
+            ==========
+                
+                file_image <str>
+                    
+                    File path of the input image.
+                
+                file_sunglasses <str>
+                    
+                    File path of the sunglasses.
+                
+                file_model <str>
+                    
+                    A file-like object, or a string or os.PathLike object containing
+                    a file name.
+                    If "default", a saved model in this package will be used.
+            
+            RETURNS
+            =======
+                
+                None
+        
+        ============================================================================
+        END << DOC << _apply_glasses
+        ============================================================================
+        """
+        
+        # Loading sunglasses if file_sunglasses is provided >>
+        if file_sunglasses == "default":
+            file_sunglasses = DEFAULT_FILE_FILTERS_SUNGLASSES
+        sunglasses = cv2.imread(file_sunglasses, cv2.IMREAD_UNCHANGED)
+        
+        # Loading model if file_model is provided >>
+        if file_model != "default":
+            self.load_model(file_model)
+            self.eval()
+        
+        # Detecting facial keypoints >>
+        keypoints, faces = self._detect_facial_keypoints(file_image)
+        
+        # Looping over the detected faces >>
+        len_faces = len(faces)
+        fig, axes = plt.subplots(1, len_faces, figsize = (len_faces*figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE))
+        
+        for j, (face, keypoint) in enumerate(zip(faces, keypoints)):
+            
+            # Untransform image and points >>
+            face    = face.numpy()
+            key_pts = keypoint.detach().numpy()[0]*DEFAULT_PREPROCESS_SCALING_SQRT+DEFAULT_PREPROCESS_SCALING_MEAN
+            
+            # Copy of the face image for overlay
+            face_copy = np.copy(face)
+            
+            # Assigning location to top-left location for sunglasses to go >>
+            # no. 17 = edge of left eyebrow
+            x = int(key_pts[17, 0]) - 5
+            y = int(key_pts[17, 1]) + 1
+            
+            # Assigning height and width of sunglasses >>
+            # w = left to right eyebrow edges
+            w = int(abs(key_pts[17,0] - key_pts[26,0])+5)
+            # h: length of nose
+            h = int(abs(key_pts[27,1] - key_pts[34,1])+5)
+            
+            # Resizing sunglasses >>
+            # new_sunglasses = np.copy(sunglasses)
+            new_sunglasses = cv2.resize(sunglasses, (w, h), interpolation = cv2.INTER_CUBIC)
+            
+            # Get region of interest on the face to change >>
+            roi_color = face_copy[y:y+h,x:x+w]
+            
+            # Finding all non-transparent pts >>
+            ind = np.argwhere(new_sunglasses[:,:,3] > 0)
+            
+            # Replacing the original image pixel with that of the new_sunglasses for each non-transparent point >>
+            for i in range(3):
+                roi_color[ind[:,0],ind[:,1],i] = new_sunglasses[ind[:,0],ind[:,1],i]/255
+            
+            # set the area of the image to the changed region with sunglasses
+            face_copy[y:y+h,x:x+w] = roi_color
+            
+            # Plotting face with sunglasses >>
+            axes_curr = axes if len_faces == 1 else axes[j]
+            plot_keypoints(image = face_copy, axes = axes_curr)
+        
+        # plt.show()
+        
+        return keypoints, faces
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << _apply_glasses
+    # ==============================================================================================================================
+    
+    
+    # ==============================================================================================================================
+    # START >> METHOD >> _apply_face_blur
+    # ==============================================================================================================================
+    # >>
+    def _apply_face_blur( self
+                        , file_image
+                        , file_model     = "default"
+                        , figsizeScale   = DEFAULT_FIGSIZESCALE
+                        ) :
+        
+        """
+        ============================================================================
+        START >> DOC >> _apply_face_blur
+        ============================================================================
+            
+            GENERAL INFO
+            ============
+                
+                Detects the facial keypoints in the iunput image.
+            
+            PARAMETERS
+            ==========
+                
+                file_image <str>
+                    
+                    File path of the input image.
+                
+                file_model <str>
+                    
+                    A file-like object, or a string or os.PathLike object containing
+                    a file name.
+                    If "default", a saved model in this package will be used.
+            
+            RETURNS
+            =======
+                
+                None
+        
+        ============================================================================
+        END << DOC << _apply_face_blur
+        ============================================================================
+        """
+        
+        # Loading model if file_model is provided >>
+        if file_model != "default":
+            self.load_model(file_model)
+            self.eval()
+        
+        # Detecting facial keypoints >>
+        keypoints, faces = self._detect_facial_keypoints(file_image)
+        
+        # Looping over the detected faces >>
+        len_faces = len(faces)
+        fig, axes = plt.subplots(1, len_faces, figsize = (len_faces*figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE))
+        
+        for j, (face, keypoint) in enumerate(zip(faces, keypoints)):
+            
+            # Untransform image and points >>
+            face    = face.numpy()
+            key_pts = keypoint.detach().numpy()[0]*DEFAULT_PREPROCESS_SCALING_SQRT+DEFAULT_PREPROCESS_SCALING_MEAN
+            
+            # Copy of the face image for overlay
+            face_copy = np.copy(face)
+            
+            # Assigning location to top-left location for moustache to go >>
+            # np. 3 = edge of left eyebrow
+            x = int(key_pts[0,  0]+2)
+            y = int(key_pts[19, 1]-10)
+            
+            # Assigning height and width of moustache >>
+            w = int(abs(key_pts[0, 0] - key_pts[16,0])-4)
+            h = int(abs(key_pts[19,1] - key_pts[ 8,1]))
+            
+            # Kernel for blurring >>
+            kernal = np.ones((h,w), dtype=np.float32)/(h*w)
+            face_copy[y:y+h,x:x+w] = cv2.filter2D(face_copy[y:y+h,x:x+w], -1, kernal)
+            
+            # Plotting face with moustache >>
+            axes_curr = axes if len_faces == 1 else axes[j]
+            plot_keypoints(image = face_copy, axes = axes_curr)
+        
+        # plt.show()
+        
+        return keypoints, faces
+    # <<
+    # ==============================================================================================================================
+    # END << METHOD << _apply_face_blur
     # ==============================================================================================================================
     
     

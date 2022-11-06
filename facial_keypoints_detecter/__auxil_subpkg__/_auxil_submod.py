@@ -41,81 +41,68 @@ from ..__constants_subpkg__    import *
 # START >> EXPORTS
 # ==================================================================================
 # >>
-__all__ = ["detect_faces"]
+__all__ = []
 # <<
 # ==================================================================================
 # END << EXPORTS
 # ==================================================================================
 
 
-# ==================================================================================================================================
-# START >> FUNCTION >> detect_faces
-# ==================================================================================================================================
-# >>
-def detect_faces( file_image
-                , plot_enabled = False
-                , figsizeScale = DEFAULT_FIGSIZESCALE
-                ) :
-    
-    """
-    ================================================================================
-    START >> DOC >> detect_faces
-    ================================================================================
-        
-        GENERAL INFO
-        ============
-            
-            Detects faces in the input images using HAAR-cascade classifier for
-            frontal faces.
-        
-        PARAMETERS
-        ==========
-            
-            file_image <str>
-                    
-                    File path of the input image.
-            
-            plot_enabled <bool>
-                    
-                    When enabled plots the detected facial keypoints.
-        
-        RETURNS
-        =======
-            
-            faces <np.ndarray>
-                
-                Numpy array of 4 points for each face detected indicating top-left
-                corner x & y pos, width and height of bounding rectangles of shape
-                (n_faces, 2).
-    
-    ================================================================================
-    END << DOC << detect_faces
-    ================================================================================
-    """
-    
-    # Loading in color image for face detection >>
-    image_bgr = cv2.imread(file_image)
-    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-    
-    # Running the haar cascade classifier for detecting frontal faces >>
-    faces = FACE_HARR_CASCADE.detectMultiScale(image_rgb, scaleFactor=DEFAULT_HARR_SCALE_FACTOR, minNeighbors=DEFAULT_HARR_MIN_NEIGHBOURS)
-    
-    # Making a copy of the original image to plot detections on >>
-    image_with_detections = image_rgb.copy()
-    
-    # Looping over the detected faces, mark the image where each face is found >>
-    if plot_enabled:
-        for (x,y,w,h) in faces:
-            # Drawing a rectangle around each detected face >>
-            cv2.rectangle( image_with_detections,(x,y),(x+w,y+h), DEFAULT_COLOR_BOX_DETECTED_FACE, DEFAULT_SIZE_BOX_FACE_DETECTED )
-        _ = plt.figure( figsize = (figsizeScale*DEFAULT_FIGSIZE, figsizeScale*DEFAULT_FIGSIZE) )
-        plt.imshow(image_with_detections)
-    
-    return faces
-# <<
-# ==================================================================================================================================
-# END << FUNCTION << detect_faces
-# ==================================================================================================================================
+# # ==================================================================================================================================
+# # START >> FUNCTION >> apply_glasses
+# # ==================================================================================================================================
+# # >>
+# def apply_glasses   ( image
+#                     , file_model   = "default"
+#                     , figsizeScale = DEFAULT_FIGSIZESCALE
+#                     ) :
+#
+#     """
+#     ================================================================================
+#     START >> DOC >> apply_glasses
+#     ================================================================================
+#
+#         GENERAL INFO
+#         ============
+#
+#             Applies input glasses to the detected face.
+#
+#         PARAMETERS
+#         ==========
+#
+#             file_image <str>
+#
+#                     File path of the input image.
+#
+#             file_model <str>
+#
+#                 A file-like object, or a string or os.PathLike object containing
+#                 a file name.
+#                 If "default", a saved model in this package will be used.
+#
+#         RETURNS
+#         =======
+#
+#             None
+#
+#     ================================================================================
+#     END << DOC << apply_glasses
+#     ================================================================================
+#     """
+#
+#     # Loading model if file_model is provided >>
+#     if file_model != "default":
+#         # self.load_model(file_model)
+#         None
+#
+#     # keypoints, images = self.detect_facial_keypoints(file_image)
+#
+#     return None
+# # <<
+# # ==================================================================================================================================
+# # END << FUNCTION << apply_glasses
+# # ==================================================================================================================================
+
 
 
 # ==================================================================================================================================
