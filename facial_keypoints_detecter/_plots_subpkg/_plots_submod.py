@@ -342,62 +342,6 @@ def plot_features   ( image_gray_tensor
 
 
 
-# ==================================================================================================================================
-# START >> FUNCTION >> _template_submod_func
-# ==================================================================================================================================
-# >>
-def _template_submod_func   ( p_p_p_p_1 = ""
-                            , p_p_p_p_2 = ""
-                            ) :
-    
-    """
-    ================================================================================
-    START >> DOC >> _template_submod_func
-    ================================================================================
-        
-        GENERAL INFO
-        ============
-            
-            t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t t_t
-            t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t t_t
-            t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t t_t t_t_t_t t_t_t t_t
-        
-        PARAMETERS
-        ==========
-            
-            p_p_p_p_1 <type>
-                
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-            
-            p_p_p_p_2 <type>
-                
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-        
-        RETURNS
-        =======
-            
-            r_r_r_r <type>
-                
-                t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t_t t_t_t_t_t t_t t_t_t_t t_t
-    
-    ================================================================================
-    END << DOC << _template_submod_func
-    ================================================================================
-    """
-    
-    _name_func = inspect.stack()[0][3]
-    print(f"This is a print from '{_name_func}'{p_p_p_p_1}{p_p_p_p_2}.")
-    
-    return None
-# <<
-# ==================================================================================================================================
-# END << FUNCTION << _template_submod_func
-# ==================================================================================================================================
-
-
-
 # <<
 # ==================================================================================================================================
 # END << SUBMODULE << facial_keypoint_detecter._plots_subpkg._plots_submod
