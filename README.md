@@ -75,15 +75,13 @@ unzip -n data/train-test-data.zip -d data
   1. Facial filters
   2. Face blur
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_ex.png width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_ex.png width="1000"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="800"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png width="800"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png width="500"></p>  
-
-
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png width="700"></p>  
 
 - The project results and package usage have been clearly demonstrated in 
   - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).
