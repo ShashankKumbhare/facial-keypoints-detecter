@@ -75,11 +75,13 @@ unzip -n data/train-test-data.zip -d data
   1. Facial filters
   2. Face blur
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png  width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_ex.png width="600"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png  width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="600"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png  width="500"></p>  
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png width="600"></p>
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png width="500"></p>  
 
 
 
@@ -88,8 +90,6 @@ unzip -n data/train-test-data.zip -d data
   - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb).
   - [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb).
   - [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
-
-
 
 ---
 
