@@ -10,9 +10,8 @@
 - [**Project Overview**](#Project-Overview)
 - [**Data Description**](#Data-Description)
 - [**Methodology**](#Methodology)
-- [**Python package `traffic_light_classifier`**](#python-package-traffic_light_classifier)
-- [**Package Usage**](#Package-Usage)
 - [**Results**](#Results)
+- [**Python package `facial_keypoints_detecter`**](#python-package-facial_keypoints_detecter)
 
 ---
 
@@ -54,3 +53,49 @@
 
 Note: Datasets are explored in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).  
 Note: This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
+
+```
+mkdir data
+
+wget -P data/ https://s3.amazonaws.com/video.udacity-data.com/topher/2018/May/5aea1b91_train-test-data/train-test-data.zip
+
+unzip -n data/train-test-data.zip -d data
+```
+
+---
+
+## Results
+
+- A custom made Python package `facial_keypoints_detecter` which contains a classifier, plotting & feature extraction functionalities, and datasets for the project.
+- The trained model has been implemented for 2 example applications:
+  1. Facial filters
+  2. Face blur
+- The project results and package usage have been clearly demonstrated in 
+  - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).
+  - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb).
+  - [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb).
+  - [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
+
+---
+
+## Python package `facial_keypoints_detecter`
+
+- This project utilizes a custom-made package `facial_keypoints_detecter` which contains a classifier, plotting & feature extraction functionalities, and datasets for the project.
+- Libraries used: `OpenCV-Python`, `scipy`, `matplotlib`, `numpy`.
+- This library contains a cnn model, pre-processing tools, plotting tools, and datasets loading tools for this project.
+- facial_keypoints_detecter contains a cnn model, pre-processing
+- Main libraries used: PyTorch, OpenCV-Python, matplotlib, pandas, numpy.
+
+### Installation
+
+``` python 
+# Install package from PyPI >>
+!pip install facial_keypoints_detecter
+# or
+# Install package from GitHub >>
+!pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
+```
+
+### Dependencies
+
+`Python 3`, `PyTorch`, `torchvision`, `OpenCV`, `Matplotlib`, `pandas`.
