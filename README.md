@@ -75,7 +75,7 @@ unzip -n data/train-test-data.zip -d data
   1. Facial filters
   2. Face blur
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_ex.png width="1000"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_filter_glasses_ex.png width="1000"></p>
 
 <p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="800"></p>
 
