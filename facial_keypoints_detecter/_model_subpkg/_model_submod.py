@@ -795,7 +795,7 @@ class Net(nn.Module):
             
             # Assigning height and width of sunglasses >>
             # w = left to right eyebrow edges
-            w = int(abs(key_pts[17,0] - key_pts[26,0])+5)
+            w = int(abs(key_pts[17,0] - key_pts[26,0])+7)
             # h: length of nose
             h = int(abs(key_pts[27,1] - key_pts[34,1])+5)
             
