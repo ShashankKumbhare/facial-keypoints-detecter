@@ -51,7 +51,9 @@
 - 2308 are [test images](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data/test).  
 - The information about the images and keypoints in this dataset are summarized in [CSV files](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data).  
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
+#### Original + Augmented data
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/sample_keypoints.png  width="600"></p>
 
 Note: Datasets are explored in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).  
 Note: This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
@@ -72,6 +74,11 @@ unzip -n data/train-test-data.zip -d data
 - The trained model has been implemented for 2 example applications:
   1. Facial filters
   2. Face blur
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png  width="600"></p>
+
+
+
 - The project results and package usage have been clearly demonstrated in 
   - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).
   - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb).
