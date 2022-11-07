@@ -38,7 +38,7 @@
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" height="200" />
-  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/landmarks_numbered.jpg" height="200" />
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/landmarks_numbered.png" height="200" />
 </p>
 
 - Facial keypoints are the small magenta dots shown on each of the faces in the image above.  
@@ -75,6 +75,8 @@ unzip -n data/train-test-data.zip -d data
   - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb).
   - [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb).
   - [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
+
+
 
 ---
 
