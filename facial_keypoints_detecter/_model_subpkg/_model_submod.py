@@ -211,9 +211,9 @@ class Net(nn.Module):
         
         # Conv/relu + pool + dropout layers >>
         # In:  224 x 244 x 1
-        x = self.pool( F.elu( self.conv1(x) ) ) # out: 32  x 110 x 110
-        x = self.pool( F.elu( self.conv2(x) ) ) # out: 64  x 54  x 54
-        x = self.pool( F.elu( self.conv3(x) ) ) # out: 128 x 26  x 26
+        x = self.pool( F.relu( self.conv1(x) ) ) # out: 32  x 110 x 110
+        x = self.pool( F.relu( self.conv2(x) ) ) # out: 64  x 54  x 54
+        x = self.pool( F.relu( self.conv3(x) ) ) # out: 128 x 26  x 26
         
         # x = self.pool( F.elu( self.bn1( self.conv1(x) ) ) ) # out: 32  x 110 x 110
         # x = self.pool( F.elu( self.bn2( self.conv2(x) ) ) ) # out: 64  x 54  x 54
