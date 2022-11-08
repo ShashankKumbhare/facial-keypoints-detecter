@@ -113,9 +113,9 @@ unzip -n data/train-test-data.zip -d data
 
 ``` python 
 # Install package from PyPI >>
-!pip install facial_keypoints_detecter
+pip install facial_keypoints_detecter
 # or
 # Install package from GitHub >>
-!pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
+pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
 ```
 Package usage has benn demonstrated in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb), [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb), [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb), [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
