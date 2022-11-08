@@ -1,9 +1,17 @@
 
-1. To build the python package run the following in git-bash:
+1. Push to Github
+
+    - Git bash
+    
+        - 'git add --all'
+        - 'git commit -m "minor"'
+        - 'git push --all'
+
+2. To build the python package run the following in git-bash:
 
     - 'python setup.py sdist bdist_wheel'
 
-2. To publish on PyPI:
+3. To publish on PyPI:
 
     - Git bash
     
@@ -11,5 +19,5 @@
     
     - Windows PowerShell
         
-        - cd "C:\Users\shash\My Drive\Github Repositories\facial-keypoints-detecter"
+        - 'cd "C:\Users\shash\My Drive\Github Repositories\facial-keypoints-detecter"'
         - 'twine upload dist/*'
