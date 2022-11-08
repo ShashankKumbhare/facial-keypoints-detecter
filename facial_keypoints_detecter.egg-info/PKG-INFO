@@ -1,0 +1,138 @@
+Metadata-Version: 2.1
+Name: facial-keypoints-detecter
+Version: 1.0.0
+Summary: A CNN based facial keypoints detector.
+Home-page: https://github.com/ShashankKumbhare/facial-keypoints-detecter
+Author: Shashank Kumbhare
+Author-email: shashankkumbhare8@gmail.com
+License: MIT
+Keywords: facial-keypoints-detecter,facial landmarks,facial filters,PyTorch,torchvision,OpenCV-Python,python,ML,machine learning,AI,artificial intelligence
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown
+
+
+# Facial Keypoints Detection
+
+### A computer vision project to build a facial keypoints detection system.
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
+
+## Table of Contents
+
+- [**Project Overview**](#Project-Overview)
+- [**Data Description**](#Data-Description)
+- [**Methodology**](#Methodology)
+- [**Results**](#Results)
+- [**Python package `facial_keypoints_detecter`**](#python-package-facial_keypoints_detecter)
+
+---
+
+## Project Overview
+
+- Facial keypoints detection system has variety of applications, including: 
+  - Facial tracking.
+  - Facial pose recognition.
+  - Facial filters.
+  - Emotion recognition.
+  - Medical diagnosis: Identifying dysmorphic facial symptoms.
+- Detecting facial keypoints is a challenging problem given the variations in both facial features as well as image conditions. Facial features may differ according to size, position, pose and expression, while image qualtiy may vary with illumination and viewing angle.  
+- In this project, **Convolutional Neural Network (CNN)** based facial keypoints detector system has been implemented to detect 68 facial keypoints (also called facial landmarks) around important areas of the face: the eyes, corners of the mouth, the nose, etc. using **computer vision techniques** and **deep learning architectures**.  
+- The project is broken up into a few main parts in 4 Python notebooks:
+  - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb): Loading and Visualizing the Facial Keypoint Data.  
+  - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb): Defining and Training a Convolutional Neural Network (CNN) to Predict Facial Keypoints.  
+  - [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb): Facial Keypoint Detection Using Haar Cascades and a Trained CNN.  
+  - [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb): Applications - Facial filters, Face Blur.  
+- The implemented Python package code is [facial_keypoints_detecter](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/facial_keypoints_detecter).
+
+---
+
+## Data Description
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" height="200" />
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/landmarks_numbered.png" height="200" />
+</p>
+
+- Facial keypoints are the small magenta dots shown on each of the faces in the image above.  
+- In each training and test image, there is a single face and 68 keypoints, with coordinates (x, y), for that face.  
+- These keypoints mark important areas of the face: the eyes, corners of the mouth, the nose, etc. Here they are, numbered, and you can see that specific ranges of points match different portions of the face.  
+
+**Training and Testing Data**  
+- This facial keypoints dataset consists of 5770 [color images](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data).
+- 3462 are [training images](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data/training).
+- 2308 are [test images](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data/test).  
+- The information about the images and keypoints in this dataset are summarized in [CSV files](https://github.com/ShashankKumbhare/facial-keypoints-detecter/tree/main/data).  
+
+#### Original + Augmented data
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/sample_keypoints.png  width="600"></p>
+
+Note: Datasets are explored in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).  
+Note: This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
+
+```
+mkdir data
+
+wget -P data/ https://s3.amazonaws.com/video.udacity-data.com/topher/2018/May/5aea1b91_train-test-data/train-test-data.zip
+
+unzip -n data/train-test-data.zip -d data
+```
+
+---
+
+## Results
+
+- A custom made Python package `facial_keypoints_detecter` which contains a classifier, plotting & feature extraction functionalities, and datasets for the project.
+- The trained model has been implemented for 2 example applications:
+  1. Facial filters
+  2. Face blur
+
+### Facial filters
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_filter_glasses_ex.png width="1000"></p>
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="800"></p>
+
+### Face blur
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png width="800"></p>
+
+### Feature visualization
+
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png width="600"></p>  
+
+- The project results and package usage have been clearly demonstrated in 
+  - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).
+  - [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb).
+  - [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb).
+  - [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
+
+---
+
+## Python package `facial_keypoints_detecter`
+
+- This project utilizes a custom-made package `facial_keypoints_detecter` which contains a classifier, plotting & feature extraction functionalities, and datasets for the project.
+- Libraries used: `Python 3`, `PyTorch`, `torchvision`, `OpenCV-Python`, `Matplotlib`, `pandas`, `numpy`.
+- This library contains a cnn model, pre-processing tools, plotting tools, and datasets loading tools for this project.
+- facial_keypoints_detecter contains a cnn model, pre-processing
+- Main libraries used: PyTorch, OpenCV-Python, matplotlib, pandas, numpy.
+
+### Dependencies
+
+`Python 3`, `PyTorch`, `torchvision`, `OpenCV-Python`, `Matplotlib`, `pandas`, `numpy`.
+
+### Installation
+
+``` python 
+# Install package from PyPI >>
+!pip install facial_keypoints_detecter
+# or
+# Install package from GitHub >>
+!pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
+```
+
+

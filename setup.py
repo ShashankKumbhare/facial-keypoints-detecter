@@ -6,7 +6,7 @@ with open(file = "README.md", mode = "r") as readme_handle:
     long_description = readme_handle.read()
 
 setup(
-    name             = 'facial_keypoint_detecter',
+    name             = 'facial_keypoints_detecter',
     version          = '1.0.0',
     author           = 'Shashank Kumbhare',
     author_email     = 'shashankkumbhare8@gmail.com',
