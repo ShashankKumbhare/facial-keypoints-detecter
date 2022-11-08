@@ -100,10 +100,14 @@ unzip -n data/train-test-data.zip -d data
 ## Python package `facial_keypoints_detecter`
 
 - This project utilizes a custom-made package `facial_keypoints_detecter` which contains a classifier, plotting & feature extraction functionalities, and datasets for the project.
-- Libraries used: `OpenCV-Python`, `scipy`, `matplotlib`, `numpy`.
+- Libraries used: `Python 3`, `PyTorch`, `torchvision`, `OpenCV-Python`, `Matplotlib`, `pandas`, `numpy`.
 - This library contains a cnn model, pre-processing tools, plotting tools, and datasets loading tools for this project.
 - facial_keypoints_detecter contains a cnn model, pre-processing
 - Main libraries used: PyTorch, OpenCV-Python, matplotlib, pandas, numpy.
+
+### Dependencies
+
+`Python 3`, `PyTorch`, `torchvision`, `OpenCV-Python`, `Matplotlib`, `pandas`, `numpy`.
 
 ### Installation
 
@@ -114,7 +118,3 @@ unzip -n data/train-test-data.zip -d data
 # Install package from GitHub >>
 !pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
 ```
-
-### Dependencies
-
-`Python 3`, `PyTorch`, `torchvision`, `OpenCV`, `Matplotlib`, `pandas`.

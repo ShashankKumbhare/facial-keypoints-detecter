@@ -115,10 +115,10 @@ DEFAULT_PREPROCESS_ROTATE_ANGLE    = 10
 # >>
 DEFAULT_CRITERION   = nn.SmoothL1Loss # nn.MSELoss
 DEFAULT_OPTIMIZER   = optim.Adam      # optim.SGD
-DEFAULT_LR          = 0.001
+DEFAULT_LR          = 0.0005
 DEFAULT_NUM_WORKERS = 1
 DEFAULT_N_EPOCHS    = 10
-DEFAULT_BATCH_SIZE  = 10
+DEFAULT_BATCH_SIZE  = 64
 DEFAULT_SHUFFLE     = True
 DEFAULT_PADDING     = 70
 DEFAULT_N_BATCH_TO_PRINT_LOSS = 20
@@ -126,12 +126,11 @@ path_file = os.path.abspath((inspect.stack()[0])[1])
 path_dir  = os.path.dirname(path_file)
 DEFAULT_FILE_MODEL_HARR_CASCADE = f"{path_dir}/detector_architectures/haarcascade_frontalface_default.xml"
 FACE_HARR_CASCADE               = cv2.CascadeClassifier(DEFAULT_FILE_MODEL_HARR_CASCADE)
-DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/saved_model_4_adam_relu.pt"
+DEFAULT_FILE_FKD_NET_MODEL      = f"{path_dir}/saved_models/saved_model_4_adam_relu_50_epochs.pt"
 DEFAULT_COLOR_BOX_DETECTED_FACE = (0, 255, 255) # (0, 207, 175) # (238, 120, 255) # (255, 0, 0)
 DEFAULT_HARR_SCALE_FACTOR       = 1.3
 DEFAULT_HARR_MIN_NEIGHBOURS     = 5
 DEFAULT_FILE_FILTERS_SUNGLASSES = f"{path_dir}/filters/sunglasses.png"
-DEFAULT_FILE_FILTERS_MOUSTACHE  = f"{path_dir}/filters/moustache.png"
 # <<
 # ==================================================================================================================================
 # END << CONSTANTS << Model related

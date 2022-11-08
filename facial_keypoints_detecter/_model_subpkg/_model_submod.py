@@ -99,7 +99,7 @@ class Net(nn.Module):
         # self.fc2      = nn.Linear( in_features  =       500, out_features = 136 )  # [ n_parameters = (512*6*6)*136 = 2506752 ]
         # --------------------------------------------------------------------------------------------------------------------------
         # Dropout layer >>
-        # self.drop   = nn.Dropout( p = 0.4 )
+        self.drop   = nn.Dropout( p = 0.4 )
         # --------------------------------------------------------------------------------------------------------------------------
         
         # Initializatiing with custom weights >>
@@ -225,7 +225,7 @@ class Net(nn.Module):
         
         # Linear layers with dropout in between >>
         # x = F.relu( self.fc(x) )
-        # x = self.drop(x)
+        x = self.drop(x)
         x = self.fc(x)
         # x = self.fc2(x)
         

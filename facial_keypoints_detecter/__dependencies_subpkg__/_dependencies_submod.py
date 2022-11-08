@@ -57,7 +57,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as I
 import torch.optim as optim
-from scipy import ndimage
 import imutils
 # <<
 # ==================================================================================
