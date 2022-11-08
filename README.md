@@ -9,7 +9,6 @@
 
 - [**Project Overview**](#Project-Overview)
 - [**Data Description**](#Data-Description)
-- [**Methodology**](#Methodology)
 - [**Results**](#Results)
 - [**Python package `facial_keypoints_detecter`**](#python-package-facial_keypoints_detecter)
 
