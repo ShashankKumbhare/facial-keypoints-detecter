@@ -11,5 +11,5 @@
     
     - Windows PowerShell
         
-        - cd "C:\Users\shash\My Drive\Github Repositories\facial-keypoint-detecter"
+        - cd "C:\Users\shash\My Drive\Github Repositories\facial-keypoints-detecter"
         - 'twine upload dist/*'

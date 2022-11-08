@@ -22,9 +22,7 @@ setup(
                         'numpy',
                         'pandas',
                         'matplotlib',
-                        'opencv-python',
-                        'torch==1.4.0+cpu',
-                        'torchvision==0.5.0+cpu'
+                        'opencv-python'
                        ],
     packages         = find_packages(),
     package_data     = {
