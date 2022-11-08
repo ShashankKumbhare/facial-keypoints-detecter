@@ -19,7 +19,7 @@ Description-Content-Type: text/markdown
 
 ### A computer vision project to build a facial keypoints detection system.
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/_project_intro.png  width="500"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/_project_intro.png  width="500"></p>
 
 ## Table of Contents
 
@@ -53,8 +53,8 @@ Description-Content-Type: text/markdown
 ## Data Description
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/key_pts_example.png" height="200" />
-  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/landmarks_numbered.png" height="200" />
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/key_pts_example.png" height="200" />
+  <img src="https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/landmarks_numbered.png" height="200" />
 </p>
 
 - Facial keypoints are the small magenta dots shown on each of the faces in the image above.  
@@ -69,7 +69,7 @@ Description-Content-Type: text/markdown
 
 #### Original + Augmented data
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/sample_keypoints.png  width="600"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/sample_keypoints.png  width="600"></p>
 
 Note: Datasets are explored in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).  
 Note: This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
@@ -93,17 +93,17 @@ unzip -n data/train-test-data.zip -d data
 
 ### Facial filters
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/keypoints_detected_filter_glasses_ex.png width="1000"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/keypoints_detected_filter_glasses_ex.png width="1000"></p>
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/row_glasses.png width="800"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/row_glasses.png width="800"></p>
 
 ### Face blur
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/face_blur_ex.png width="800"></p>
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/face_blur_ex.png width="800"></p>
 
 ### Feature visualization
 
-<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/auxil/images/filter_and_filter_maps.png width="600"></p>  
+<p align="center"><img src=https://raw.githubusercontent.com/ShashankKumbhare/facial-keypoints-detecter/main/images/filter_and_filter_maps.png width="600"></p>  
 
 - The project results and package usage have been clearly demonstrated in 
   - [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb).
@@ -129,10 +129,10 @@ unzip -n data/train-test-data.zip -d data
 
 ``` python 
 # Install package from PyPI >>
-!pip install facial_keypoints_detecter
+pip install facial_keypoints_detecter
 # or
 # Install package from GitHub >>
-!pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
+pip install git+https://github.com/ShashankKumbhare/facial-keypoints-detecter.git#egg=facial-keypoints-detecter
 ```
-
+Package usage has benn demonstrated in [Notebook 1](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/1.%20Load%20and%20Visualize%20Data.ipynb), [Notebook 2](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/2.%20Define%20the%20Network%20Architecture.ipynb), [Notebook 3](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/3.%20Facial%20Keypoint%20Detection%2C%20Complete%20Pipeline.ipynb), [Notebook 4](https://github.com/ShashankKumbhare/facial-keypoints-detecter/blob/main/4.%20Applications%20-%20Facial%20filters%2C%20Face%20Blur.ipynb).
 
